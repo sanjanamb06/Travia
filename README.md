@@ -30,32 +30,21 @@ A minimalistic platform to book unique homes and spaces from local hosts — or 
 > Make sure you have **Node.js**, **npm**, and **MongoDB** installed.
 
 ### 1. Clone the Repository
-
-```bash
 git clone https://github.com/sanjanamb06/travia.git
 cd travia
-2. Install Frontend and Backend Dependencies
-bash
-Copy
-Edit
+## 2. Install Frontend and Backend Dependencies
+
 cd client
 npm install
 cd ../server
 npm install
-3. Set up Environment Variables
+## 3. Set up Environment Variables
 Create a .env file in the /server folder with:
-
-ini
-Copy
-Edit
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 CLOUDINARY_URL=your_cloudinary_url (if applicable)
-4. Run the Application
-bash
-Copy
-Edit
+## 4. Run the Application
 # In /server
 npm start
 
@@ -63,18 +52,15 @@ npm start
 npm start
 Open http://localhost:3000 to view it in your browser.
 
-📌 Status
-🟡 MVP Stage – Core features working
+##📌 Status
+-🟡 MVP Stage – Core features working
 
-🧠 Future Plans
-🤖 AI-powered Travel Recommendation System
+##🧠 Future Plans
+-🤖 AI-powered Travel Recommendation System
+-💬 In-app messaging between hosts and travelers
+-📆 Booking calendar with availability tracking
+-📍 Smart filtering using user preferences
 
-💬 In-app messaging between hosts and travelers
-
-📆 Booking calendar with availability tracking
-
-📍 Smart filtering using user preferences
-
-🙋‍♀️ Author
-Sanjana MB
-🔗 GitHub
+## 🙋‍♀️ Author
+-Sanjana MB
+-🔗 GitHub

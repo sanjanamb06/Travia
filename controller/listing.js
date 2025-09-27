@@ -4,8 +4,82 @@ const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
+  try {
+    let { search, country, minPrice, maxPrice, sortBy } = req.query;
+    
+    // Build query object
+    let query = {};
+    
+    // Search functionality
+    if (search && search.trim()) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { location: { $regex: search, $options: 'i' } },
+        { country: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Country filter
+    if (country && country.trim() && country !== 'all') {
+      query.country = { $regex: country, $options: 'i' };
+    }
+    
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = parseInt(minPrice);
+      if (maxPrice) query.price.$lte = parseInt(maxPrice);
+    }
+    
+    // Build sort object
+    let sortOptions = {};
+    switch (sortBy) {
+      case 'price-low':
+        sortOptions.price = 1;
+        break;
+      case 'price-high':
+        sortOptions.price = -1;
+        break;
+      case 'newest':
+        sortOptions._id = -1;
+        break;
+      case 'oldest':
+        sortOptions._id = 1;
+        break;
+      default:
+        sortOptions._id = -1; // Default to newest first
+    }
+    
+    // Execute query
+    const allListings = await Listing.find(query).sort(sortOptions);
+    
+    // Get unique countries for filter dropdown
+    const countries = await Listing.distinct('country');
+    
+    // Search statistics
+    const totalListings = await Listing.countDocuments();
+    const filteredCount = allListings.length;
+    
+    res.render("listings/index.ejs", { 
+      allListings, 
+      countries,
+      searchParams: req.query,
+      totalListings,
+      filteredCount
+    });
+  } catch (error) {
+    console.error('Error in listings index:', error);
+    req.flash("error", "Something went wrong while fetching listings");
+    const allListings = await Listing.find({});
+    res.render("listings/index.ejs", { 
+      allListings, 
+      countries: [],
+      searchParams: {},
+      totalListings: allListings.length,
+      filteredCount: allListings.length
+    });
+  }
 };
 
 module.exports.create = (req, res) => {
@@ -82,4 +156,78 @@ module.exports.delete = async (req, res) => {
   console.log(delList);
   req.flash("success", "Deleted successfully!");
   res.redirect("/listings");
+};
+
+// API endpoint for search functionality
+module.exports.searchAPI = async (req, res) => {
+  try {
+    let { search, country, minPrice, maxPrice, sortBy, limit = 20 } = req.query;
+    
+    // Build query object
+    let query = {};
+    
+    // Search functionality
+    if (search && search.trim()) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { location: { $regex: search, $options: 'i' } },
+        { country: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Country filter
+    if (country && country.trim() && country !== 'all') {
+      query.country = { $regex: country, $options: 'i' };
+    }
+    
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = parseInt(minPrice);
+      if (maxPrice) query.price.$lte = parseInt(maxPrice);
+    }
+    
+    // Build sort object
+    let sortOptions = {};
+    switch (sortBy) {
+      case 'price-low':
+        sortOptions.price = 1;
+        break;
+      case 'price-high':
+        sortOptions.price = -1;
+        break;
+      case 'newest':
+        sortOptions._id = -1;
+        break;
+      case 'oldest':
+        sortOptions._id = 1;
+        break;
+      default:
+        sortOptions._id = -1;
+    }
+    
+    // Execute query with limit
+    const listings = await Listing.find(query)
+      .sort(sortOptions)
+      .limit(parseInt(limit))
+      .select('title description location country price image');
+    
+    // Get total count for pagination
+    const totalCount = await Listing.countDocuments(query);
+    
+    res.json({
+      success: true,
+      listings,
+      totalCount,
+      hasMore: totalCount > parseInt(limit)
+    });
+  } catch (error) {
+    console.error('Search API error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error performing search',
+      error: error.message
+    });
+  }
 };

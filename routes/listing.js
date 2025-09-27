@@ -11,6 +11,9 @@ const upload = multer({ storage });
 
 const listingController = require("../controller/listing.js");
 
+// Search API endpoint for AJAX requests
+router.get('/api/search', wrapAsync(listingController.searchAPI));
+
 //this is a middleware related to joi to validate listing
 const validateListing = (req, res, next) => {
   let { error } = listingSchema.validate(req.body);

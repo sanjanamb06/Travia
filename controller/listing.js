@@ -1,7 +1,16 @@
 const Listing = require("../models/listing.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapToken = process.env.MAP_TOKEN;
-const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+
+// Only initialize geocoding client if we have a valid token
+let geocodingClient = null;
+if (mapToken && mapToken !== 'your_mapbox_token_here' && mapToken.length > 10) {
+  try {
+    geocodingClient = mbxGeocoding({ accessToken: mapToken });
+  } catch (error) {
+    console.log("Warning: Invalid Mapbox token, maps will not be available");
+  }
+}
 
 module.exports.index = async (req, res) => {
   try {
@@ -105,12 +114,21 @@ module.exports.show = async (req, res) => {
 };
 
 module.exports.addNew = async (req, res) => {
-  let response = await geocodingClient
-    .forwardGeocode({
-      query: req.body.listing.location,
-      limit: 1,
-    })
-    .send();
+  let response = null;
+  
+  // Only try geocoding if we have a valid client
+  if (geocodingClient) {
+    try {
+      response = await geocodingClient
+        .forwardGeocode({
+          query: req.body.listing.location,
+          limit: 1,
+        })
+        .send();
+    } catch (error) {
+      console.log("Geocoding error:", error.message);
+    }
+  }
 
   let url = req.file.path;
   let filename = req.file.filename;
@@ -119,8 +137,18 @@ module.exports.addNew = async (req, res) => {
   newList.owner = req.user._id;
   newList.image = { url, filename };
 
-  newList.geometry=response.body.features[0].geometry;
-  let save=await newList.save();
+  // Set geometry if geocoding was successful
+  if (response && response.body && response.body.features && response.body.features.length > 0) {
+    newList.geometry = response.body.features[0].geometry;
+  } else {
+    // Default geometry (coordinates for a generic location if geocoding fails)
+    newList.geometry = {
+      type: "Point",
+      coordinates: [0, 0] // Default coordinates
+    };
+  }
+
+  let save = await newList.save();
   console.log(save);
   req.flash("success", "New listing created!");
   res.redirect("/listings");

@@ -1,93 +1,139 @@
 <% layout('/layouts/boilerplate') -%>
-<body>
-  <div class="row">
-    <div class="col-8 offset-2">
-      <br />
-      <h2>Add your Listing</h2>
-      <br />
-      <form
-        action="/listings"
-        method="POST"
-        novalidate
-        class="needs-validation"
-        enctype="multipart/form-data"
-      >
-        <div class="mb-3">
-          <label for="title" class="form-label">Title</label>
-          <input
-            name="listing[title]"
-            placeholder="Add a catchy title"
-            type="text"
-            class="form-control"
-            required
-          />
-          <div class="valid-feedback">Looks good!</div>
-          <div class="invalid-feedback">Title required</div>
-        </div>
-        <br />
-        
-        <div class="mb-3">
-          <label for="image" class="form-label">Upload Image</label>
-          <input name="listing[image][url]" type="file" class="form-control" required/>
-        </div>
-        <br />
-        <div class="mb-3">
-          <label for="description" class="form-label">Description</label>
-          <textarea
-            name="listing[description]"
-            placeholder="Enter description"
-            type="text"
-            class="form-control"
-            required
-          ></textarea>
-          <div class="invalid-feedback">Description required</div>
-        </div>
-        <div class="row">
-          <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Price</label>
-            <input
-              name="listing[price]"
-              placeholder="Enter price"
-              class="form-control"
-              min="0"
-              required
-            />
-            <div class="invalid-feedback">Price should be valid</div>
-          </div>
-          <br />
-          <div class="mb-3 col-md-8">
-            <label for="country" class="form-label">Country</label>
-            <input
-              name="listing[country]"
-              placeholder="Enter country"
-              type="text"
-              class="form-control"
-              required
-            />
-            <div class="invalid-feedback">Country required</div>
-          </div>
-        </div>
-        <br />
-        <div class="mb-3">
-          <label for="location" class="form-label">Location</label>
-          <input
-            name="listing[location]"
-            placeholder="Enter location"
-            type="text"
-            class="form-control"
-            required
-          />
-          <div class="invalid-feedback">Location required</div>
-        </div>
 
-        <br />
+<div class="container-fluid px-3">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h3 class="card-title mb-0 text-center">
+            <i class="fas fa-plus-circle me-2"></i>Add Your Listing
+          </h3>
+        </div>
+        <div class="card-body p-4">
+          <form
+            action="/listings"
+            method="POST"
+            novalidate
+            class="needs-validation"
+            enctype="multipart/form-data"
+          >
+            <!-- Title -->
+            <div class="mb-4">
+              <label for="title" class="form-label fw-semibold">
+                <i class="fas fa-heading me-2"></i>Title
+              </label>
+              <input
+                id="title"
+                name="listing[title]"
+                placeholder="Add a catchy title for your listing"
+                type="text"
+                class="form-control form-control-lg"
+                required
+              />
+              <div class="valid-feedback">Perfect! Title looks good.</div>
+              <div class="invalid-feedback">Please enter a title for your listing.</div>
+            </div>
+            
+            <!-- Image Upload -->
+            <div class="mb-4">
+              <label for="image" class="form-label fw-semibold">
+                <i class="fas fa-image me-2"></i>Upload Image
+              </label>
+              <input 
+                id="image"
+                name="listing[image][url]" 
+                type="file" 
+                class="form-control"
+                accept="image/*"
+                required
+              />
+              <div class="form-text">Choose a high-quality image (JPG, PNG, WebP)</div>
+              <div class="invalid-feedback">Please select an image for your listing.</div>
+            </div>
+            
+            <!-- Description -->
+            <div class="mb-4">
+              <label for="description" class="form-label fw-semibold">
+                <i class="fas fa-align-left me-2"></i>Description
+              </label>
+              <textarea
+                id="description"
+                name="listing[description]"
+                placeholder="Describe your listing in detail..."
+                class="form-control"
+                rows="4"
+                required
+              ></textarea>
+              <div class="form-text">Help guests know what makes your place special</div>
+              <div class="invalid-feedback">Please provide a description.</div>
+            </div>
+            
+            <!-- Price and Country Row -->
+            <div class="row g-3 mb-4">
+              <div class="col-12 col-sm-6">
+                <label for="price" class="form-label fw-semibold">
+                  <i class="fas fa-rupee-sign me-2"></i>Price per Night
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">₹</span>
+                  <input
+                    id="price"
+                    name="listing[price]"
+                    placeholder="0"
+                    type="number"
+                    class="form-control"
+                    min="1"
+                    required
+                  />
+                </div>
+                <div class="invalid-feedback">Please enter a valid price.</div>
+              </div>
+              
+              <div class="col-12 col-sm-6">
+                <label for="country" class="form-label fw-semibold">
+                  <i class="fas fa-globe me-2"></i>Country
+                </label>
+                <input
+                  id="country"
+                  name="listing[country]"
+                  placeholder="e.g., India"
+                  type="text"
+                  class="form-control"
+                  required
+                />
+                <div class="invalid-feedback">Please enter the country.</div>
+              </div>
+            </div>
+            
+            <!-- Location -->
+            <div class="mb-4">
+              <label for="location" class="form-label fw-semibold">
+                <i class="fas fa-map-marker-alt me-2"></i>Location
+              </label>
+              <input
+                id="location"
+                name="listing[location]"
+                placeholder="e.g., Mumbai, Maharashtra"
+                type="text"
+                class="form-control"
+                required
+              />
+              <div class="form-text">Enter city, state, or specific address</div>
+              <div class="invalid-feedback">Please enter the location.</div>
+            </div>
 
-        <br />
-        <button class="btn btn-dark" style="background-color: red">
-          Submit
-        </button>
-        <br /><br /><br />
-      </form>
+            <!-- Submit Button -->
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success btn-lg">
+                <i class="fas fa-check me-2"></i>Create Listing
+              </button>
+              <a href="/listings" class="btn btn-outline-secondary">
+                <i class="fas fa-times me-2"></i>Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
-</body>
+</div>

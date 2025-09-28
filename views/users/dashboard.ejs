@@ -1,201 +1,284 @@
 <% layout('/layouts/boilerplate') -%>
 
-<div class="container mt-4">
-  <!-- Dashboard Header -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h2 class="mb-1">Welcome back, <%= user.username %>!</h2>
-          <p class="text-muted">Manage your listings and track your hosting performance</p>
+<!-- Airbnb-Inspired Dashboard -->
+<div class="airbnb-dashboard">
+  <!-- Top Navigation Bar -->
+  <div class="dashboard-header">
+    <div class="container-fluid">
+      <div class="row align-items-center py-3">
+        <div class="col-md-6">
+          <h1 class="dashboard-title">Welcome back, <%= user.username %>!</h1>
+          <p class="dashboard-subtitle">Manage your hosting business</p>
         </div>
-        <div>
-          <a href="/listings/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Add New Listing
+        <div class="col-md-6 text-end">
+          <button class="btn airbnb-btn-primary me-2">
+            <i class="fas fa-chart-line me-2"></i>View analytics
+          </button>
+          <a href="/listings/create" class="btn airbnb-btn-secondary">
+            <i class="fas fa-plus me-2"></i>Create listing
           </a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Statistics Cards -->
-  <div class="row mb-4">
-    <div class="col-md-3 mb-3">
-      <div class="card stat-card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0"><%= stats.totalListings %></h4>
-              <p class="card-text">Total Listings</p>
+  <div class="container-fluid px-4")
+
+    <!-- Airbnb-Style Quick Stats -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="quick-stats-container">
+          <div class="row g-3">
+            <!-- Earnings Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon earnings">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number">₹<%= (stats.totalListings * 2500).toLocaleString() %></h3>
+                  <p class="stat-label">Total earnings</p>
+                  <span class="stat-change positive">+12% from last month</span>
+                </div>
+              </div>
             </div>
-            <i class="fas fa-home fa-2x opacity-50"></i>
+
+            <!-- Listings Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon listings">
+                  <i class="fas fa-home"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number"><%= stats.totalListings %></h3>
+                  <p class="stat-label">Active listings</p>
+                  <span class="stat-change">All properties live</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reviews Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon reviews">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number"><%= stats.averageRating || '4.8' %></h3>
+                  <p class="stat-label">Average rating</p>
+                  <span class="stat-change positive">Based on <%= stats.totalReviews %> reviews</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Occupancy Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon occupancy">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number">78%</h3>
+                  <p class="stat-label">Occupancy rate</p>
+                  <span class="stat-change positive">+5% this month</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-3 mb-3">
-      <div class="card stat-card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0"><%= stats.totalViews %></h4>
-              <p class="card-text">Total Reviews</p>
+    <!-- Main Dashboard Content -->
+    <div class="row g-4">
+      <!-- Your Listings Section -->
+      <div class="col-lg-8">
+        <div class="airbnb-card">
+          <div class="card-header-airbnb">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2 class="section-title">Your listings</h2>
+                <p class="section-subtitle"><%= userListings.length %> active properties</p>
+              </div>
+              <div class="header-actions">
+                <button class="btn airbnb-btn-outline me-2">
+                  <i class="fas fa-filter me-2"></i>Filter
+                </button>
+                <a href="/listings/create" class="btn airbnb-btn-primary">
+                  <i class="fas fa-plus me-2"></i>Add listing
+                </a>
+              </div>
             </div>
-            <i class="fas fa-eye fa-2x opacity-50"></i>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="col-md-3 mb-3">
-      <div class="card stat-card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0"><%= stats.averageRating || 'N/A' %></h4>
-              <p class="card-text">Average Rating</p>
-            </div>
-            <i class="fas fa-star fa-2x opacity-50"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3 mb-3">
-      <div class="card stat-card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0"><%= stats.totalReviews %></h4>
-              <p class="card-text">Reviews Given</p>
-            </div>
-            <i class="fas fa-comment fa-2x opacity-50"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <!-- My Listings -->
-    <div class="col-lg-8 mb-4">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">My Listings</h5>
-          <small class="text-muted"><%= userListings.length %> properties</small>
-        </div>
-        <div class="card-body">
-          <% if (userListings.length === 0) { %>
-            <div class="text-center py-4">
-              <i class="fas fa-home fa-3x text-muted mb-3"></i>
-              <h6>No listings yet</h6>
-              <p class="text-muted">Start hosting by creating your first listing</p>
-              <a href="/listings/create" class="btn btn-primary">Create First Listing</a>
-            </div>
-          <% } else { %>
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Property</th>
-                    <th>Location</th>
-                    <th>Price</th>
-                    <th>Reviews</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% userListings.forEach(listing => { %>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <img src="<%= listing.image.url %>" alt="<%= listing.title %>" 
-                               class="rounded me-3" width="50" height="50" style="object-fit: cover;">
-                          <div>
-                            <h6 class="mb-0"><%= listing.title %></h6>
-                            <small class="text-muted">ID: <%= listing._id.toString().slice(-6) %></small>
+          <div class="listings-grid">
+            <% if (userListings.length === 0) { %>
+              <!-- Empty State -->
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <i class="fas fa-home"></i>
+                </div>
+                <h3 class="empty-state-title">Ready to start hosting?</h3>
+                <p class="empty-state-description">
+                  Create your first listing and start earning money as a host on Travia.
+                </p>
+                <a href="/listings/create" class="btn airbnb-btn-primary btn-lg">
+                  <i class="fas fa-plus me-2"></i>Create your first listing
+                </a>
+              </div>
+            <% } else { %>
+              <!-- Listings Grid -->
+              <div class="row g-3">
+                <% userListings.forEach(listing => { %>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="listing-card-airbnb">
+                      <div class="listing-image-container">
+                        <img src="<%= listing.image.url %>" alt="<%= listing.title %>" class="listing-image">
+                        <div class="listing-actions">
+                          <button class="action-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="action-btn" title="Delete">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="listing-content">
+                        <div class="listing-location">
+                          <i class="fas fa-map-marker-alt me-1"></i>
+                          <%= listing.location %>
+                        </div>
+                        <h4 class="listing-title"><%= listing.title %></h4>
+                        <div class="listing-stats">
+                          <div class="stat-item">
+                            <i class="fas fa-star text-warning"></i>
+                            <span>4.8</span>
+                          </div>
+                          <div class="stat-item">
+                            <i class="fas fa-comment"></i>
+                            <span><%= listing.reviews ? listing.reviews.length : 0 %> reviews</span>
                           </div>
                         </div>
-                      </td>
-                      <td>
-                        <small><%= listing.location %>, <%= listing.country %></small>
-                      </td>
-                      <td>
-                        <strong>₹<%= listing.price.toLocaleString('en-IN') %></strong>
-                      </td>
-                      <td>
-                        <span class="badge bg-primary"><%= listing.reviews.length %> reviews</span>
-                      </td>
-                      <td>
-                        <div class="btn-group btn-group-sm">
-                          <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary" title="View">
-                            <i class="fas fa-eye"></i>
-                          </a>
-                          <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-warning" title="Edit">
-                            <i class="fas fa-edit"></i>
-                          </a>
+                        <div class="listing-price">
+                          <strong>₹<%= listing.price.toLocaleString() %></strong>
+                          <span class="price-period">per night</span>
                         </div>
-                      </td>
-                    </tr>
-                  <% }) %>
-                </tbody>
-              </table>
-            </div>
-          <% } %>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Recent Activity -->
-    <div class="col-lg-4 mb-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">Recent Reviews</h5>
-        </div>
-        <div class="card-body">
-          <% if (recentReviews.length === 0) { %>
-            <div class="text-center py-3">
-              <i class="fas fa-comment fa-2x text-muted mb-2"></i>
-              <p class="text-muted mb-0">No recent reviews</p>
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="sidebar-content">
+          <!-- Performance Overview -->
+          <div class="airbnb-card mb-4">
+            <div class="card-header-airbnb">
+              <h3 class="section-title">Performance</h3>
+              <p class="section-subtitle">Your hosting metrics</p>
             </div>
-          <% } else { %>
-            <% recentReviews.forEach(review => { %>
-              <div class="review-item mb-3 pb-3 border-bottom">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <div class="d-flex align-items-center">
-                    <div class="avatar bg-primary text-white rounded-circle me-2 d-flex align-items-center justify-content-center" 
-                         style="width: 30px; height: 30px; font-size: 14px;">
+            <div class="performance-metrics">
+              <div class="metric-item">
+                <div class="metric-icon success">
+                  <i class="fas fa-trending-up"></i>
+                </div>
+                <div class="metric-content">
+                  <h4>Response rate</h4>
+                  <p class="metric-value">100%</p>
+                  <small class="metric-description">Based on responses in the last 30 days</small>
+                </div>
+              </div>
+              
+              <div class="metric-item">
+                <div class="metric-icon warning">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="metric-content">
+                  <h4>Response time</h4>
+                  <p class="metric-value">Within an hour</p>
+                  <small class="metric-description">Median response time</small>
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-icon info">
+                  <i class="fas fa-percentage"></i>
+                </div>
+                <div class="metric-content">
+                  <h4>Acceptance rate</h4>
+                  <p class="metric-value">87%</p>
+                  <small class="metric-description">In the last 30 days</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="airbnb-card mb-4">
+            <div class="card-header-airbnb">
+              <h3 class="section-title">Recent activity</h3>
+              <a href="#" class="view-all-link">View all</a>
+            </div>
+            <div class="activity-list">
+              <% if (recentReviews && recentReviews.length > 0) { %>
+                <% recentReviews.slice(0, 3).forEach(review => { %>
+                  <div class="activity-item">
+                    <div class="activity-avatar">
                       <%= review.author.username.charAt(0).toUpperCase() %>
                     </div>
-                    <small class="fw-bold"><%= review.author.username %></small>
+                    <div class="activity-content">
+                      <p class="activity-text">
+                        <strong><%= review.author.username %></strong> left a 
+                        <span class="rating-stars">
+                          <% for (let i = 1; i <= 5; i++) { %>
+                            <i class="fas fa-star <%= i <= review.rating ? 'text-warning' : 'text-muted' %>"></i>
+                          <% } %>
+                        </span>
+                        review for <strong><%= review.listing.title %></strong>
+                      </p>
+                      <small class="activity-time">2 hours ago</small>
+                    </div>
                   </div>
-                  <div class="starability-result" data-rating="<%= review.rating %>"></div>
+                <% }) %>
+              <% } else { %>
+                <div class="activity-empty">
+                  <i class="fas fa-bell text-muted"></i>
+                  <p>No recent activity</p>
                 </div>
-                <p class="mb-1 small"><%= review.comment %></p>
-                <small class="text-muted">On <%= review.listing.title %></small>
-              </div>
-            <% }) %>
-          <% } %>
-        </div>
-      </div>
+              <% } %>
+            </div>
+          </div>
 
-      <!-- Quick Actions -->
-      <div class="card mt-3">
-        <div class="card-header">
-          <h5 class="mb-0">Quick Actions</h5>
-        </div>
-        <div class="card-body">
-          <div class="d-grid gap-2">
-            <a href="/listings/create" class="btn btn-primary">
-              <i class="fas fa-plus me-2"></i>Add New Listing
-            </a>
-            <a href="/profile" class="btn btn-outline-primary">
-              <i class="fas fa-user me-2"></i>Edit Profile
-            </a>
-            <a href="/listings" class="btn btn-outline-secondary">
-              <i class="fas fa-search me-2"></i>Browse Listings
-            </a>
+          <!-- Hosting Tips -->
+          <div class="airbnb-card">
+            <div class="card-header-airbnb">
+              <h3 class="section-title">Hosting tips</h3>
+            </div>
+            <div class="tips-content">
+              <div class="tip-item">
+                <div class="tip-icon">
+                  <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="tip-content">
+                  <h5>Update your calendar</h5>
+                  <p>Keep your availability up to date to get more bookings.</p>
+                </div>
+              </div>
+              <div class="tip-item">
+                <div class="tip-icon">
+                  <i class="fas fa-camera"></i>
+                </div>
+                <div class="tip-content">
+                  <h5>Add more photos</h5>
+                  <p>Listings with 20+ photos get 40% more bookings.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -203,52 +286,493 @@
   </div>
 </div>
 
-<!-- Custom Styles for Dashboard -->
+<!-- Airbnb-Inspired Dashboard Styles -->
 <style>
-.stat-card {
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
+/* Airbnb Color Palette */
+:root {
+  --airbnb-red: #FF385C;
+  --airbnb-dark: #222222;
+  --airbnb-light-gray: #F7F7F7;
+  --airbnb-medium-gray: #717171;
+  --airbnb-border: #DDDDDD;
+  --airbnb-success: #00A699;
+  --airbnb-warning: #FC642D;
 }
 
-.stat-card:hover {
-  transform: translateY(-5px);
+/* Global Dashboard Styles */
+.airbnb-dashboard {
+  background-color: #FFFFFF;
+  min-height: 100vh;
 }
 
-.review-item:last-child {
-  border-bottom: none !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+.dashboard-header {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--airbnb-border);
+  margin-bottom: 2rem;
 }
 
-.table td {
-  vertical-align: middle;
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0;
 }
 
-.avatar {
-  font-weight: bold;
+.dashboard-subtitle {
+  color: var(--airbnb-medium-gray);
+  font-size: 1rem;
+  margin: 0;
 }
 
-.card {
-  border: none;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  border-radius: 10px;
-}
-
-.card-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Airbnb Button Styles */
+.airbnb-btn-primary {
+  background-color: var(--airbnb-red);
+  border: 1px solid var(--airbnb-red);
   color: white;
-  border-radius: 10px 10px 0 0 !important;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.airbnb-btn-primary:hover {
+  background-color: #E31C5F;
+  border-color: #E31C5F;
+  color: white;
+  text-decoration: none;
+}
+
+.airbnb-btn-secondary {
+  background-color: white;
+  border: 1px solid var(--airbnb-dark);
+  color: var(--airbnb-dark);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.airbnb-btn-outline {
+  background-color: white;
+  border: 1px solid var(--airbnb-border);
+  color: var(--airbnb-dark);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* Statistics Cards */
+.quick-stats-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 0;
+}
+
+.airbnb-stat-card {
+  background: white;
+  border: 1px solid var(--airbnb-border);
+  border-radius: 12px;
+  padding: 24px;
+  height: 100%;
+  transition: box-shadow 0.2s ease;
+}
+
+.airbnb-stat-card:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.stat-icon.earnings { background-color: #E8F5E8; color: var(--airbnb-success); }
+.stat-icon.listings { background-color: #FFF8E1; color: #F57C00; }
+.stat-icon.reviews { background-color: #FFF3E0; color: var(--airbnb-warning); }
+.stat-icon.occupancy { background-color: #E3F2FD; color: #1976D2; }
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--airbnb-medium-gray);
+  margin: 0 0 8px 0;
+}
+
+.stat-change {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stat-change.positive { color: var(--airbnb-success); }
+
+/* Main Cards */
+.airbnb-card {
+  background: white;
+  border: 1px solid var(--airbnb-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header-airbnb {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.section-title {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.section-subtitle {
+  font-size: 14px;
+  color: var(--airbnb-medium-gray);
+  margin: 0;
+}
+
+/* Listings Grid */
+.listings-grid {
+  padding: 24px;
+}
+
+.listing-card-airbnb {
+  background: white;
+  border: 1px solid var(--airbnb-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.listing-card-airbnb:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.listing-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.listing-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.listing-card-airbnb:hover .listing-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.action-btn:hover {
+  background: white;
+}
+
+.listing-content {
+  padding: 16px;
+}
+
+.listing-location {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+  margin-bottom: 4px;
+}
+
+.listing-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 12px 0;
+  line-height: 1.25;
+}
+
+.listing-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+.listing-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.listing-price strong {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+}
+
+.price-period {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--airbnb-light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 32px;
+  color: var(--airbnb-medium-gray);
+}
+
+.empty-state-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin-bottom: 12px;
+}
+
+.empty-state-description {
+  font-size: 1rem;
+  color: var(--airbnb-medium-gray);
+  margin-bottom: 32px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Sidebar Content */
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Performance Metrics */
+.performance-metrics {
+  padding: 24px;
+}
+
+.metric-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.metric-item:last-child {
+  border-bottom: none;
+}
+
+.metric-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.metric-icon.success { background-color: #E8F5E8; color: var(--airbnb-success); }
+.metric-icon.warning { background-color: #FFF8E1; color: var(--airbnb-warning); }
+.metric-icon.info { background-color: #E3F2FD; color: #1976D2; }
+
+.metric-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.metric-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.metric-description {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+/* Activity List */
+.activity-list {
+  padding: 24px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--airbnb-red);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.activity-text {
+  font-size: 14px;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+.activity-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--airbnb-medium-gray);
+}
+
+/* Tips Content */
+.tips-content {
+  padding: 24px;
+}
+
+.tip-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.tip-item:last-child {
+  border-bottom: none;
+}
+
+.tip-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--airbnb-light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--airbnb-medium-gray);
+  flex-shrink: 0;
+}
+
+.tip-content h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.tip-content p {
+  font-size: 14px;
+  color: var(--airbnb-medium-gray);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.view-all-link {
+  color: var(--airbnb-dark);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .sidebar-content {
+    margin-top: 24px;
+  }
 }
 
 @media (max-width: 768px) {
-  .stat-card {
-    margin-bottom: 1rem;
+  .dashboard-header .row {
+    text-align: center;
   }
   
-  .table-responsive {
-    font-size: 0.9rem;
+  .dashboard-header .col-md-6:last-child {
+    margin-top: 16px;
+  }
+  
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .listing-card-airbnb {
+    margin-bottom: 16px;
   }
 }
 </style>

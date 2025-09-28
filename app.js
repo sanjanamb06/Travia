@@ -26,16 +26,25 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-const dbUrl = process.env.ATLASDB_URL;
+const dbUrl = process.env.ATLASDB_URL || "mongodb://localhost:27017/travia-local";
 
 async function main() {
-  await mongoose.connect(dbUrl);
+  try {
+    await mongoose.connect(dbUrl);
+    console.log("✅ Connected to MongoDB successfully");
+    console.log(`📍 Database URL: ${dbUrl.includes('localhost') ? 'Local MongoDB' : 'MongoDB Atlas'}`);
+  } catch (error) {
+    console.log("❌ MongoDB connection failed:", error.message);
+    if (dbUrl.includes('localhost')) {
+      console.log("💡 Make sure MongoDB is running locally. You can:");
+      console.log("   1. Install MongoDB Community Server");
+      console.log("   2. Or use MongoDB Atlas by updating ATLASDB_URL in .env");
+    }
+    process.exit(1);
+  }
 }
-main()
-  .then(() => {
-    console.log("Connection success");
-  })
-  .catch((err) => console.log(err));
+
+main();
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,

@@ -38,7 +38,7 @@ By participating in this project, you agree to maintain a **respectful and inclu
 
 ## 📜 License
 
-By contributing to this project, you agree that your contributions will be licensed under the [`Coming Soon`]
+By contributing to this project, you agree that your contributions will be licensed under the `Coming Soon` .
 
 ![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
@@ -82,9 +82,9 @@ We aim to keep things smooth and transparent:
 
 * Once your PR is submitted, a maintainer will review it.
 * You may be asked to:
- * Fix styling issues.
- * Add missing documentation/tests.
- * Break large PRs into smaller pieces.
+  * Fix styling issues.
+  * Add missing documentation/tests.
+  * Break large PRs into smaller pieces.
 * After approval:
   * Your PR will be merged with a squash merge to keep history clean.
   * You’ll receive feedback, even if the PR isn’t merged immediately.

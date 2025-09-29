@@ -1,8 +1,21 @@
+/* Airbnb-Inspired Global Styles */
+:root {
+  --airbnb-red: #FF385C;
+  --airbnb-red-dark: #E31C5F;
+  --airbnb-black: #222222;
+  --airbnb-gray: #717171;
+  --airbnb-light-gray: #F7F7F7;
+  --airbnb-border: #DDDDDD;
+  --airbnb-white: #FFFFFF;
+}
+
 body {
-  font-family: "Montserrat", serif !important;
+  font-family: "Montserrat", sans-serif !important;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  color: var(--airbnb-black);
+  background-color: var(--airbnb-white);
   margin: 0;
   padding: 0;
 }
@@ -13,20 +26,54 @@ body {
   padding: 0 15px;
 }
 
+/* Airbnb-Style Navigation */
 .navbar {
   height: 5rem;
-  background-color: aliceblue;
+  background-color: var(--airbnb-white);
+  border-bottom: 1px solid var(--airbnb-border);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
   padding: 0.5rem 1rem;
 }
 
 .fa-compass {
-  color: red;
+  color: var(--airbnb-red);
   font-size: 2rem;
 }
 
 .nav-link {
-  color: #222222 !important;
+  color: var(--airbnb-black) !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
   font-size: 0.95rem;
+}
+
+.nav-link:hover {
+  color: var(--airbnb-red) !important;
+}
+
+/* Airbnb-Style Buttons */
+.btn-primary {
+  background-color: var(--airbnb-red);
+  border-color: var(--airbnb-red);
+  font-weight: 600;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--airbnb-red-dark);
+  border-color: var(--airbnb-red-dark);
+}
+
+.btn-outline-primary {
+  color: var(--airbnb-red);
+  border-color: var(--airbnb-red);
+  font-weight: 600;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--airbnb-red);
+  border-color: var(--airbnb-red);
 }
 
 /* Mobile-first responsive navbar */
@@ -109,8 +156,20 @@ body {
   }
 }
 
-/* Cards - Responsive Design */
+/* Enhanced Listing Cards */
 .listing-card {
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.listing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.original-listing-card {
   border: none !important;
   margin-bottom: 2rem;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);

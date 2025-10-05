@@ -4,7 +4,7 @@ const mapToken = process.env.MAP_TOKEN;
 
 // Initialize geocoding client only if valid token is provided
 let geocodingClient = null;
-if (mapToken && mapToken.startsWith('pk.') && mapToken !== 'your_mapbox_access_token') {
+if (mapToken && mapToken.startsWith('pk.') && mapToken !== 'your_mapbox_access_token' && mapToken !== 'your_mapbox_token_here') {
   try {
     geocodingClient = mbxGeocoding({ accessToken: mapToken });
   } catch (error) {
@@ -63,14 +63,17 @@ module.exports.addNew = async (req, res) => {
   newList.owner = req.user._id;
   newList.image = { url, filename };
 
-  // Set geometry only if geocoding was successful
-  if (response && response.body.features && response.body.features.length > 0) {
+  // Set geometry if geocoding was successful
+  if (response && response.body && response.body.features && response.body.features.length > 0) {
     newList.geometry = response.body.features[0].geometry;
   } else {
-    // Default geometry (you can set a default location or leave it undefined)
-    console.warn('No geocoding data available. Listing created without coordinates.');
+    // Default geometry (coordinates for a generic location if geocoding fails)
+    newList.geometry = {
+      type: "Point",
+      coordinates: [0, 0] // Default coordinates
+    };
+    console.warn('No geocoding data available. Using default coordinates.');
   }
-  
   let save = await newList.save();
   console.log(save);
   req.flash("success", "New listing created!");

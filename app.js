@@ -19,6 +19,11 @@ const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
+// Add root route redirect to listings
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
@@ -30,15 +35,22 @@ const dbUrl = process.env.ATLASDB_URL || "mongodb://localhost:27017/travia-local
 
 async function main() {
   try {
+    if (!dbUrl) {
+      throw new Error("MongoDB connection string (ATLASDB_URL) is not defined in .env file");
+    }
+    
     await mongoose.connect(dbUrl);
     console.log("✅ Connected to MongoDB successfully");
     console.log(`📍 Database URL: ${dbUrl.includes('localhost') ? 'Local MongoDB' : 'MongoDB Atlas'}`);
   } catch (error) {
-    console.log("❌ MongoDB connection failed:", error.message);
-    if (dbUrl.includes('localhost')) {
-      console.log("💡 Make sure MongoDB is running locally. You can:");
-      console.log("   1. Install MongoDB Community Server");
+    console.error("❌ MongoDB connection failed:", error.message);
+    console.log("💡 Please check your MongoDB connection string in .env file");
+    if (dbUrl && dbUrl.includes('localhost')) {
+      console.log("   1. Make sure MongoDB is running locally");
       console.log("   2. Or use MongoDB Atlas by updating ATLASDB_URL in .env");
+    } else {
+      console.log("   For local MongoDB: mongodb://localhost:27017/travia");
+      console.log("   For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/travia");
     }
     process.exit(1);
   }
@@ -46,20 +58,27 @@ async function main() {
 
 main();
 
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: {
-    secret: process.env.SECRET,
-  },
-  touchAfter: 24 * 60 * 60,
-});
+// Create MongoStore only if dbUrl is available
+let store;
+if (dbUrl) {
+  try {
+    store = MongoStore.create({
+      mongoUrl: dbUrl,
+      crypto: {
+        secret: process.env.SECRET,
+      },
+      touchAfter: 24 * 60 * 60,
+    });
 
-store.on("error", () => {
-  console.log("Error in mongo session store", err);
-});
+    store.on("error", (err) => {
+      console.log("Error in mongo session store:", err);
+    });
+  } catch (err) {
+    console.warn("Could not create MongoDB store, using memory store:", err.message);
+  }
+}
 
 const sessionOptions = {
-  store: store, //storing session related info in mongoatlas
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
@@ -69,6 +88,14 @@ const sessionOptions = {
     httpOnly: true,
   },
 };
+
+// Add MongoDB store if available, otherwise use default memory store
+if (store) {
+  sessionOptions.store = store;
+  console.log("Using MongoDB session store");
+} else {
+  console.log("Using memory session store (sessions will not persist)");
+}
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -84,7 +111,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;
+  res.locals.currUser = req.user || null; // Ensure currUser is always defined
   next();
 });
 

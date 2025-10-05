@@ -2,13 +2,13 @@ const Listing = require("../models/listing.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapToken = process.env.MAP_TOKEN;
 
-// Only initialize geocoding client if we have a valid token
+// Initialize geocoding client only if valid token is provided
 let geocodingClient = null;
-if (mapToken && mapToken !== 'your_mapbox_token_here' && mapToken.length > 10) {
+if (mapToken && mapToken.startsWith('pk.') && mapToken !== 'your_mapbox_access_token' && mapToken !== 'your_mapbox_token_here') {
   try {
     geocodingClient = mbxGeocoding({ accessToken: mapToken });
   } catch (error) {
-    console.log("Warning: Invalid Mapbox token, maps will not be available");
+    console.warn('Invalid Mapbox token provided. Map functionality will be disabled.');
   }
 }
 
@@ -42,7 +42,7 @@ module.exports.show = async (req, res) => {
 module.exports.addNew = async (req, res) => {
   let response = null;
   
-  // Only try geocoding if we have a valid client
+  // Only use geocoding if client is available
   if (geocodingClient) {
     try {
       response = await geocodingClient
@@ -52,7 +52,7 @@ module.exports.addNew = async (req, res) => {
         })
         .send();
     } catch (error) {
-      console.log("Geocoding error:", error.message);
+      console.warn('Geocoding failed:', error.message);
     }
   }
 
@@ -72,8 +72,8 @@ module.exports.addNew = async (req, res) => {
       type: "Point",
       coordinates: [0, 0] // Default coordinates
     };
+    console.warn('No geocoding data available. Using default coordinates.');
   }
-
   let save = await newList.save();
   console.log(save);
   req.flash("success", "New listing created!");

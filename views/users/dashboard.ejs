@@ -1,0 +1,778 @@
+<% layout('/layouts/boilerplate') -%>
+
+<!-- Airbnb-Inspired Dashboard -->
+<div class="airbnb-dashboard">
+  <!-- Top Navigation Bar -->
+  <div class="dashboard-header">
+    <div class="container-fluid">
+      <div class="row align-items-center py-3">
+        <div class="col-md-6">
+          <h1 class="dashboard-title">Welcome back, <%= user.username %>!</h1>
+          <p class="dashboard-subtitle">Manage your hosting business</p>
+        </div>
+        <div class="col-md-6 text-end">
+          <button class="btn airbnb-btn-primary me-2">
+            <i class="fas fa-chart-line me-2"></i>View analytics
+          </button>
+          <a href="/listings/create" class="btn airbnb-btn-secondary">
+            <i class="fas fa-plus me-2"></i>Create listing
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid px-4")
+
+    <!-- Airbnb-Style Quick Stats -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="quick-stats-container">
+          <div class="row g-3">
+            <!-- Earnings Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon earnings">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number">₹<%= (stats.totalListings * 2500).toLocaleString() %></h3>
+                  <p class="stat-label">Total earnings</p>
+                  <span class="stat-change positive">+12% from last month</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Listings Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon listings">
+                  <i class="fas fa-home"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number"><%= stats.totalListings %></h3>
+                  <p class="stat-label">Active listings</p>
+                  <span class="stat-change">All properties live</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reviews Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon reviews">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number"><%= stats.averageRating || '4.8' %></h3>
+                  <p class="stat-label">Average rating</p>
+                  <span class="stat-change positive">Based on <%= stats.totalReviews %> reviews</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Occupancy Card -->
+            <div class="col-lg-3 col-md-6">
+              <div class="airbnb-stat-card">
+                <div class="stat-icon occupancy">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number">78%</h3>
+                  <p class="stat-label">Occupancy rate</p>
+                  <span class="stat-change positive">+5% this month</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Content -->
+    <div class="row g-4">
+      <!-- Your Listings Section -->
+      <div class="col-lg-8">
+        <div class="airbnb-card">
+          <div class="card-header-airbnb">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2 class="section-title">Your listings</h2>
+                <p class="section-subtitle"><%= userListings.length %> active properties</p>
+              </div>
+              <div class="header-actions">
+                <button class="btn airbnb-btn-outline me-2">
+                  <i class="fas fa-filter me-2"></i>Filter
+                </button>
+                <a href="/listings/create" class="btn airbnb-btn-primary">
+                  <i class="fas fa-plus me-2"></i>Add listing
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="listings-grid">
+            <% if (userListings.length === 0) { %>
+              <!-- Empty State -->
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <i class="fas fa-home"></i>
+                </div>
+                <h3 class="empty-state-title">Ready to start hosting?</h3>
+                <p class="empty-state-description">
+                  Create your first listing and start earning money as a host on Travia.
+                </p>
+                <a href="/listings/create" class="btn airbnb-btn-primary btn-lg">
+                  <i class="fas fa-plus me-2"></i>Create your first listing
+                </a>
+              </div>
+            <% } else { %>
+              <!-- Listings Grid -->
+              <div class="row g-3">
+                <% userListings.forEach(listing => { %>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="listing-card-airbnb">
+                      <div class="listing-image-container">
+                        <img src="<%= listing.image.url %>" alt="<%= listing.title %>" class="listing-image">
+                        <div class="listing-actions">
+                          <button class="action-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="action-btn" title="Delete">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="listing-content">
+                        <div class="listing-location">
+                          <i class="fas fa-map-marker-alt me-1"></i>
+                          <%= listing.location %>
+                        </div>
+                        <h4 class="listing-title"><%= listing.title %></h4>
+                        <div class="listing-stats">
+                          <div class="stat-item">
+                            <i class="fas fa-star text-warning"></i>
+                            <span>4.8</span>
+                          </div>
+                          <div class="stat-item">
+                            <i class="fas fa-comment"></i>
+                            <span><%= listing.reviews ? listing.reviews.length : 0 %> reviews</span>
+                          </div>
+                        </div>
+                        <div class="listing-price">
+                          <strong>₹<%= listing.price.toLocaleString() %></strong>
+                          <span class="price-period">per night</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="sidebar-content">
+          <!-- Performance Overview -->
+          <div class="airbnb-card mb-4">
+            <div class="card-header-airbnb">
+              <h3 class="section-title">Performance</h3>
+              <p class="section-subtitle">Your hosting metrics</p>
+            </div>
+            <div class="performance-metrics">
+              <div class="metric-item">
+                <div class="metric-icon success">
+                  <i class="fas fa-trending-up"></i>
+                </div>
+                <div class="metric-content">
+                  <h4>Response rate</h4>
+                  <p class="metric-value">100%</p>
+                  <small class="metric-description">Based on responses in the last 30 days</small>
+                </div>
+              </div>
+              
+              <div class="metric-item">
+                <div class="metric-icon warning">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="metric-content">
+                  <h4>Response time</h4>
+                  <p class="metric-value">Within an hour</p>
+                  <small class="metric-description">Median response time</small>
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-icon info">
+                  <i class="fas fa-percentage"></i>
+                </div>
+                <div class="metric-content">
+                  <h4>Acceptance rate</h4>
+                  <p class="metric-value">87%</p>
+                  <small class="metric-description">In the last 30 days</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="airbnb-card mb-4">
+            <div class="card-header-airbnb">
+              <h3 class="section-title">Recent activity</h3>
+              <a href="#" class="view-all-link">View all</a>
+            </div>
+            <div class="activity-list">
+              <% if (recentReviews && recentReviews.length > 0) { %>
+                <% recentReviews.slice(0, 3).forEach(review => { %>
+                  <div class="activity-item">
+                    <div class="activity-avatar">
+                      <%= review.author.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <div class="activity-content">
+                      <p class="activity-text">
+                        <strong><%= review.author.username %></strong> left a 
+                        <span class="rating-stars">
+                          <% for (let i = 1; i <= 5; i++) { %>
+                            <i class="fas fa-star <%= i <= review.rating ? 'text-warning' : 'text-muted' %>"></i>
+                          <% } %>
+                        </span>
+                        review for <strong><%= review.listing.title %></strong>
+                      </p>
+                      <small class="activity-time">2 hours ago</small>
+                    </div>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="activity-empty">
+                  <i class="fas fa-bell text-muted"></i>
+                  <p>No recent activity</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Hosting Tips -->
+          <div class="airbnb-card">
+            <div class="card-header-airbnb">
+              <h3 class="section-title">Hosting tips</h3>
+            </div>
+            <div class="tips-content">
+              <div class="tip-item">
+                <div class="tip-icon">
+                  <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="tip-content">
+                  <h5>Update your calendar</h5>
+                  <p>Keep your availability up to date to get more bookings.</p>
+                </div>
+              </div>
+              <div class="tip-item">
+                <div class="tip-icon">
+                  <i class="fas fa-camera"></i>
+                </div>
+                <div class="tip-content">
+                  <h5>Add more photos</h5>
+                  <p>Listings with 20+ photos get 40% more bookings.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Airbnb-Inspired Dashboard Styles -->
+<style>
+/* Airbnb Color Palette */
+:root {
+  --airbnb-red: #FF385C;
+  --airbnb-dark: #222222;
+  --airbnb-light-gray: #F7F7F7;
+  --airbnb-medium-gray: #717171;
+  --airbnb-border: #DDDDDD;
+  --airbnb-success: #00A699;
+  --airbnb-warning: #FC642D;
+}
+
+/* Global Dashboard Styles */
+.airbnb-dashboard {
+  background-color: #FFFFFF;
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--airbnb-border);
+  margin-bottom: 2rem;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0;
+}
+
+.dashboard-subtitle {
+  color: var(--airbnb-medium-gray);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Airbnb Button Styles */
+.airbnb-btn-primary {
+  background-color: var(--airbnb-red);
+  border: 1px solid var(--airbnb-red);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.airbnb-btn-primary:hover {
+  background-color: #E31C5F;
+  border-color: #E31C5F;
+  color: white;
+  text-decoration: none;
+}
+
+.airbnb-btn-secondary {
+  background-color: white;
+  border: 1px solid var(--airbnb-dark);
+  color: var(--airbnb-dark);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.airbnb-btn-outline {
+  background-color: white;
+  border: 1px solid var(--airbnb-border);
+  color: var(--airbnb-dark);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* Statistics Cards */
+.quick-stats-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 0;
+}
+
+.airbnb-stat-card {
+  background: white;
+  border: 1px solid var(--airbnb-border);
+  border-radius: 12px;
+  padding: 24px;
+  height: 100%;
+  transition: box-shadow 0.2s ease;
+}
+
+.airbnb-stat-card:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.stat-icon.earnings { background-color: #E8F5E8; color: var(--airbnb-success); }
+.stat-icon.listings { background-color: #FFF8E1; color: #F57C00; }
+.stat-icon.reviews { background-color: #FFF3E0; color: var(--airbnb-warning); }
+.stat-icon.occupancy { background-color: #E3F2FD; color: #1976D2; }
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--airbnb-medium-gray);
+  margin: 0 0 8px 0;
+}
+
+.stat-change {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stat-change.positive { color: var(--airbnb-success); }
+
+/* Main Cards */
+.airbnb-card {
+  background: white;
+  border: 1px solid var(--airbnb-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header-airbnb {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.section-title {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.section-subtitle {
+  font-size: 14px;
+  color: var(--airbnb-medium-gray);
+  margin: 0;
+}
+
+/* Listings Grid */
+.listings-grid {
+  padding: 24px;
+}
+
+.listing-card-airbnb {
+  background: white;
+  border: 1px solid var(--airbnb-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.listing-card-airbnb:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.listing-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.listing-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.listing-card-airbnb:hover .listing-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.action-btn:hover {
+  background: white;
+}
+
+.listing-content {
+  padding: 16px;
+}
+
+.listing-location {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+  margin-bottom: 4px;
+}
+
+.listing-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 12px 0;
+  line-height: 1.25;
+}
+
+.listing-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+.listing-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.listing-price strong {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+}
+
+.price-period {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--airbnb-light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 32px;
+  color: var(--airbnb-medium-gray);
+}
+
+.empty-state-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin-bottom: 12px;
+}
+
+.empty-state-description {
+  font-size: 1rem;
+  color: var(--airbnb-medium-gray);
+  margin-bottom: 32px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Sidebar Content */
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Performance Metrics */
+.performance-metrics {
+  padding: 24px;
+}
+
+.metric-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.metric-item:last-child {
+  border-bottom: none;
+}
+
+.metric-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.metric-icon.success { background-color: #E8F5E8; color: var(--airbnb-success); }
+.metric-icon.warning { background-color: #FFF8E1; color: var(--airbnb-warning); }
+.metric-icon.info { background-color: #E3F2FD; color: #1976D2; }
+
+.metric-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.metric-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.metric-description {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+/* Activity List */
+.activity-list {
+  padding: 24px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--airbnb-red);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.activity-text {
+  font-size: 14px;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: var(--airbnb-medium-gray);
+}
+
+.activity-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--airbnb-medium-gray);
+}
+
+/* Tips Content */
+.tips-content {
+  padding: 24px;
+}
+
+.tip-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--airbnb-border);
+}
+
+.tip-item:last-child {
+  border-bottom: none;
+}
+
+.tip-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--airbnb-light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--airbnb-medium-gray);
+  flex-shrink: 0;
+}
+
+.tip-content h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin: 0 0 4px 0;
+}
+
+.tip-content p {
+  font-size: 14px;
+  color: var(--airbnb-medium-gray);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.view-all-link {
+  color: var(--airbnb-dark);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .sidebar-content {
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header .row {
+    text-align: center;
+  }
+  
+  .dashboard-header .col-md-6:last-child {
+    margin-top: 16px;
+  }
+  
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .listing-card-airbnb {
+    margin-bottom: 16px;
+  }
+}
+</style>

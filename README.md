@@ -8,80 +8,209 @@ A minimalistic platform to book unique homes and spaces from local hosts — or 
 
 ## ✨ Features
 
-- 🔐 User Authentication (Register / Login / Logout)
-- 🏡 Add Your Own Listings (as a host)
-- 🗺️ Map Integration for Each Property
-- 📝 Reviews & Ratings by Travelers
-- 📱 Responsive UI for all devices
+- 🔐 **User Authentication** - Complete register/login/logout system with Passport.js
+- 🏡 **Property Listings** - Add, edit, and manage your own property listings
+- 🗺️ **Interactive Maps** - Mapbox integration for location visualization
+- 📝 **Reviews & Ratings** - Comprehensive review system for properties
+- 📱 **Responsive Design** - Mobile-first responsive UI
+- 🖼️ **Image Upload** - Cloudinary integration for property images
+- 🔒 **Session Management** - Secure session handling with MongoDB store
+- ⚡ **Flash Messages** - User feedback with connect-flash
+- 🛡️ **Input Validation** - Server-side validation with Joi
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React.js, Tailwind CSS  
-- **Backend**: Node.js, Express.js  
-- **Database**: MongoDB  
-- **Other Tools**: Mapbox, JWT Auth, Cloudinary (if used for images)
+**Frontend:**
+- EJS (Embedded JavaScript Templates)
+- CSS3 & Bootstrap (Responsive Design)
+- JavaScript (Client-side interactions)
+
+**Backend:**
+- Node.js (Runtime Environment)
+- Express.js (Web Framework)
+- Passport.js (Authentication)
+- Mongoose (MongoDB Object Modeling)
+
+**Database:**
+- MongoDB Atlas (Cloud Database)
+
+**Third-Party Services:**
+- Mapbox (Maps & Geocoding)
+- Cloudinary (Image Storage & Processing)
+
+**Development Tools:**
+- Nodemon (Development Server)
+- Method Override (HTTP Verbs)
+- Connect Flash (Flash Messages)
 
 ---
 
 ## 🚀 Getting Started (Run Locally)
 
-> Make sure you have **Node.js**, **npm**, and **MongoDB** installed.
+### Prerequisites
+- **Node.js** (v20.18.0 or higher)
+- **npm** (Node Package Manager)
+- **MongoDB Atlas** account (for database)
 
 ### 1. Clone the Repository
-git clone https://github.com/sanjanamb06/travia.git
-cd travia
+```bash
+git clone https://github.com/itsdevansh5/Travia.git
+cd Travia
+```
 
-### 1. Install Frontend and Backend Dependencies
-
-cd client
+### 2. Install Dependencies
+```bash
 npm install
+```
 
-cd ../server
-npm install
+### 3. Set Up Environment Variables
 
-### 2. Set Up Environment Variables
+Create a `.env` file in the root directory with the following variables:
 
-Create a `.env` file inside the `/server` folder with the following content:
+```env
+NODE_ENV=development
+PORT=3000
+ATLASDB_URL=your_mongodb_atlas_connection_string
+SESSION_SECRET=your_session_secret_key
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_KEY=your_cloudinary_api_key
+CLOUDINARY_SECRET=your_cloudinary_api_secret
+MAP_TOKEN=your_mapbox_access_token
+```
 
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-CLOUDINARY_URL=your_cloudinary_url # (if applicable)
+### 4. Run the Application
 
-### 3. Run the Application
+**For Development:**
+```bash
+npm run dev
+```
 
-**In `/server`:**
+**For Production:**
+```bash
 npm start
+```
 
-**In another terminal, go to `/client`:**
-npm start
+Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 
-Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+### 5. Default Route
+The app automatically redirects from `/` to `/listings` where you can view all property listings.
+
+---
+
+## � Project Structure
+
+```
+Travia/
+├── app.js                 # Main application file
+├── package.json           # Dependencies and scripts
+├── cloudConfig.js         # Cloudinary configuration
+├── schema.js             # Joi validation schemas
+├── middleware.js         # Custom middleware functions
+├── controller/           # Route controllers
+│   ├── listing.js        # Listing controller
+│   ├── review.js         # Review controller
+│   └── user.js           # User controller
+├── models/               # Database models
+│   ├── listing.js        # Listing model
+│   ├── review.js         # Review model
+│   └── user.js           # User model
+├── routes/               # Express routes
+│   ├── listing.js        # Listing routes
+│   ├── review.js         # Review routes
+│   └── user.js           # User routes
+├── views/                # EJS templates
+│   ├── layouts/          # Layout templates
+│   ├── listings/         # Listing templates
+│   ├── users/            # User templates
+│   └── includes/         # Partial templates
+├── public/               # Static files
+│   ├── css/              # Stylesheets
+│   └── js/               # Client-side JavaScript
+└── utils/                # Utility functions
+    ├── ExpressError.js   # Custom error class
+    └── wrapAsync.js      # Async error handler
+```
+
+---
+
+## � API Endpoints
+
+### Listings
+- `GET /listings` - View all listings
+- `GET /listings/new` - Show create listing form
+- `POST /listings` - Create new listing
+- `GET /listings/:id` - View specific listing
+- `GET /listings/:id/edit` - Show edit listing form
+- `PUT /listings/:id` - Update listing
+- `DELETE /listings/:id` - Delete listing
+
+### Reviews
+- `POST /listings/:id/reviews` - Add review to listing
+- `DELETE /listings/:id/reviews/:reviewId` - Delete review
+
+### Users
+- `GET /signup` - Show signup form
+- `POST /signup` - Register new user
+- `GET /login` - Show login form
+- `POST /login` - Login user
+- `GET /logout` - Logout user
 
 ---
 
 ## 📌 Status
 
-- 🟡 **MVP Stage** – Core features working
+- ✅ **Production Ready** – All core features implemented and working
+- 🚀 **Deployed** – Live on Render platform
+- 🔒 **Secure** – Authentication and authorization implemented
 
 ---
 
-## 🧠 Future Plans
+## 🧠 Future Enhancements
 
-- 🤖 AI-powered Travel Recommendation System  
-- 💬 In-app messaging between hosts and travelers  
-- 📆 Booking calendar with availability tracking  
-- 📍 Smart filtering using user preferences  
-
----
-
-## 🙋‍♀️ Author
-
-- **Sanjana MB**
-- [GitHub](https://github.com/your-github-username) <!-- Replace with your GitHub profile link -->
+- 🤖 AI-powered travel recommendations
+- 💬 Real-time messaging between hosts and guests
+- 📆 Advanced booking calendar system
+- 🔍 Enhanced search and filtering options
+- 💳 Payment gateway integration
+- 📊 Analytics dashboard for hosts
+- 🌐 Multi-language support
 
 ---
 
-*Feel free to contribute or raise issues!*
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the ISC License.
+
+---
+
+## 🙋‍♂️ Author
+
+- **Devansh**
+- [GitHub](https://github.com/itsdevansh5)
+- Repository: [Travia](https://github.com/itsdevansh5/Travia)
+
+---
+
+## 🙏 Acknowledgments
+
+- **Express.js** community for the excellent web framework
+- **Mapbox** for mapping services
+- **Cloudinary** for image management
+- **MongoDB Atlas** for database hosting
+- **Render** for deployment platform
+
+---
+
+*Feel free to ⭐ star this repository if you found it helpful!*

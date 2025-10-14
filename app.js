@@ -31,32 +31,25 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-const dbUrl = process.env.ATLASDB_URL || "mongodb://localhost:27017/travia-local";
+const dbUrl = process.env.ATLASDB_URL;
 
 async function main() {
-  try {
-    if (!dbUrl) {
-      throw new Error("MongoDB connection string (ATLASDB_URL) is not defined in .env file");
-    }
-    
-    await mongoose.connect(dbUrl);
-    console.log("✅ Connected to MongoDB successfully");
-    console.log(`📍 Database URL: ${dbUrl.includes('localhost') ? 'Local MongoDB' : 'MongoDB Atlas'}`);
-  } catch (error) {
-    console.error("❌ MongoDB connection failed:", error.message);
-    console.log("💡 Please check your MongoDB connection string in .env file");
-    if (dbUrl && dbUrl.includes('localhost')) {
-      console.log("   1. Make sure MongoDB is running locally");
-      console.log("   2. Or use MongoDB Atlas by updating ATLASDB_URL in .env");
-    } else {
-      console.log("   For local MongoDB: mongodb://localhost:27017/travia");
-      console.log("   For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/travia");
-    }
-    process.exit(1);
+  if (!dbUrl) {
+    throw new Error("MongoDB connection string (ATLASDB_URL) is not defined in .env file");
   }
+  await mongoose.connect(dbUrl);
 }
 
-main();
+main()
+  .then(() => {
+    console.log("✅ MongoDB connection successful");
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err.message);
+    console.log("💡 Please check your MongoDB connection string in .env file");
+    console.log("   For local MongoDB: mongodb://localhost:27017/travia");
+    console.log("   For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/travia");
+  });
 
 // Create MongoStore only if dbUrl is available
 let store;

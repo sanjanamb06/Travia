@@ -1,175 +1,139 @@
-# 🤝 Contributing to Travia
+<h1 align="center">✨ Contributors Guide ✨</h1>
 
-Thank you for your interest in contributing to Travia! This guide will help you get started with contributing to this travel booking platform.
+<h3 align="center">Welcome to the Travia! 😍<br>
+We appreciate your interest in contributing.😊<br> </h3>
 
-## 🚀 Getting Started
+First off, thank you for considering contributing to **Travia!** We're excited to have you join our community. Every contribution, no matter how small, helps us build the best academic resource platform for students.
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-- MongoDB (local or Atlas)
-- Git
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-### Development Setup
+This guide will walk you through the entire contribution process, from setting up your local environment to submitting a polished pull request.
 
-1. **Fork the repository**
-   ```bash
-   # Click the Fork button on GitHub, then clone your fork
-   git clone https://github.com/YOUR_USERNAME/Travia.git
-   cd Travia
-   ```
+> **New to Open Source?** No problem! This guide is designed to be beginner-friendly. If you get stuck, don't hesitate to open an issue or ask for help.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-3. **Set up environment variables**
-   ```bash
-   # Copy the example file
-   cp .env.example .env
-   
-   # Edit .env with your values:
-   # - ATLASDB_URL: Your MongoDB connection string
-   # - SECRET: Session secret key
-   # - CLOUD_NAME: Cloudinary cloud name
-   # - API_KEY: Cloudinary API key
-   # - API_SECRET: Cloudinary API secret
-   # - MAP_TOKEN: Mapbox access token
-   ```
+## 📋 Table of Contents
 
-4. **Initialize the database**
-   ```bash
-   node init/index.js
-   ```
+1. [Code of Conduct](#-code-of-conduct)
+2. [License](#-license)
+3. [Ways to Contribute](#-ways-to-contribute)
+4. [Points & Difficulty Levels](#-points--difficulty-levels)
+5. [Contribution Guidelines](#-contribution-guidelines)
+6. [PR review Process](#-pr-review-process)
+7. [How To Contribute](#-how-to-contribute)
+8. [Need More Help](#-need-more-help)
+9. [Attribution](#-attribution)
+10. [Thank you for your contribution](#thank-you-for-your-contribution)
 
-5. **Start the development server**
-   ```bash
-   npm start
-   # Server will run on http://localhost:8080
-   ```
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-## 🎯 Contribution Areas
+## 📜 Code of Conduct
 
-### 🐛 Bug Fixes (Great for beginners!)
-- Fix the variable naming bug in `middleware.js:36`
-- Improve error handling in controllers
-- Fix responsive design issues
-- Resolve console warnings
+We expect all contributors to follow our [`Code of Conduct`](https://github.com/sanjanamb06/Travia/blob/main/CODE_OF_CONDUCT.md).
 
-### ✨ Feature Development
-- Add search and filter functionality
-- Implement booking system
-- Create user dashboard
-- Add messaging between hosts and guests
-- Implement favorites/wishlist
+By participating in this project, you agree to maintain a **respectful and inclusive environment** for everyone.
 
-### 🎨 UI/UX Improvements
-- Convert EJS templates to React components
-- Add dark mode
-- Improve mobile responsiveness
-- Add loading states and animations
-- Enhance the overall design
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-### 🔧 Backend Enhancements
-- Create REST API endpoints
-- Add comprehensive validation
-- Implement rate limiting
-- Add caching with Redis
-- Improve security
+## 📜 License
 
-### 🧪 Testing & Quality
-- Write unit tests
-- Add integration tests
-- Set up E2E testing
-- Improve code coverage
-- Add linting and formatting
+By contributing to this project, you agree that your contributions will be licensed under the `Coming Soon` .
 
-## 📝 Pull Request Process
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-1. **Create a feature branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+## 🤝 Ways to Contribute
 
-2. **Make your changes**
-   - Write clean, readable code
-   - Follow existing code style
-   - Add comments where necessary
-   - Test your changes thoroughly
+You can contribute in several ways:
+- **🐞 Report Bugs:** Submit issues for reproducible bugs.
+- **💡 Suggest Features:** Propose new ideas or improvements.
+- **📖 Improve Documentation:** Enhance clarity, grammar, or structure.
+- **⚡ Add Code:** Fix bugs, build new features, or optimize existing ones.
+- **🧪 Test:** Help us find issues by testing code in different environments.
 
-3. **Commit your changes**
-   ```bash
-   git add .
-   git commit -m "feat: add your feature description"
-   ```
-   
-   Use conventional commit messages:
-   - `feat:` for new features
-   - `fix:` for bug fixes
-   - `docs:` for documentation
-   - `style:` for formatting changes
-   - `refactor:` for code refactoring
-   - `test:` for adding tests
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-4. **Push to your fork**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
+## 🎯 Points & Difficulty Levels
 
-5. **Create a Pull Request**
-   - Go to the original repository
-   - Click "New Pull Request"
-   - Provide a clear title and description
-   - Reference any related issues
+Your contributions earn points that count toward GSSoC'25 and your Travia Leaderboard status!
 
-## 🏷️ Issue Labels
+| Difficulty | Points |
+| :--------- | :----- |
+| Level 1 | 3 |
+| Level 2 | 7 |
+| Level 3 | 10  |
 
-- `good first issue` - Perfect for newcomers
-- `bug` - Something isn't working
-- `enhancement` - New feature or improvement
-- `documentation` - Documentation needs
-- `help wanted` - Extra attention needed
-- `priority: high` - High priority issues
+> **Note:** The scoring system applies only to GSSOC contributors.
 
-## 💡 Coding Guidelines
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-### JavaScript Style
-- Use ES6+ features
-- Use meaningful variable names
-- Add error handling
-- Write modular, reusable code
+## 💡 Contribution Guidelines
 
-### Database
-- Use proper validation schemas
-- Implement proper error handling
-- Use transactions for complex operations
+* **Code Style**: Use clean, readable code with meaningful names.
+* **UI Consistency**: Follow the modern UI style with animated gradients.
+* **Responsive Design**: Ensure changes work on both desktop and mobile.
+* **Commit Messages**: Use descriptive commit messages.
 
-### Security
-- Validate all inputs
-- Use parameterized queries
-- Implement proper authentication
-- Don't expose sensitive data
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-## 🤝 Community Guidelines
+## ✅ PR Review Process
 
-- Be respectful and inclusive
-- Help others learn and grow
-- Provide constructive feedback
-- Follow the Code of Conduct
-- Ask questions if you're unsure
+We aim to keep things smooth and transparent:
 
-## 🆘 Getting Help
+* Once your PR is submitted, a maintainer will review it.
+* You may be asked to:
+  * Fix styling issues.
+  * Add missing documentation/tests.
+  * Break large PRs into smaller pieces.
+* After approval:
+  * Your PR will be merged with a squash merge to keep history clean.
+  * You’ll receive feedback, even if the PR isn’t merged immediately.
+* ⌛ Reviews may take **24–72 hours** depending on activity. Thanks for your patience!
 
-- Check existing issues and discussions
-- Join our community discussions
-- Ask questions in your PR
-- Tag maintainers for help
+ > For Any Query, Send DM on LinkedIn [`Sanjana M b`](https://www.linkedin.com/in/sanjana-mb).
 
-## 🎉 Recognition
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-All contributors will be recognized in our README file and release notes!
+## How To Contribute
 
----
+- Drop a Star ⭐ in this repo
+- Take a look at the existing [**Issues**](https://github.com//sanjanamb06/Travia/issues). 
+- Fork the Repo & create a branch for any issue that you are working on and commit your work.
+- At first raise an issue in which you want to work
+- Then after assigning only then work on that issue & make a PR 
+- Create a [**Pull Request**](https://github.com//sanjanamb06/Travia/pulls), which will be promptly reviewed and given suggestions for improvements by the community.
+- **REMINDER: Don't raise more than 2 `Issue` at a time**
+- **IMPORTANT: Don't make any type of `Pull Request` until & unless you get assigned to an `Issue`**
+- Add screenshots or screen captures to your `Pull Request` to help us understand the effects of the changes that are included in your commits.
 
-**Happy Contributing! 🚀**
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
+
+<h2 align="center">Need More Help? 🤔</h1>
+
+<p align="center"> You can refer to the following articles on basics of Git and Github and also contact the Project Mentors, in case you are stuck: <br>
+  <a href="https://help.github.com/en/desktop/contributing-to-projects/creating-an-issue-or-pull-request">How to create a Issue</a> <br>
+  <a href="https://help.github.com/en/github/getting-started-with-github/fork-a-repo">Forking a Repo</a> <br>
+  <a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository">Cloning a Repo</a> <br>
+  <a href="https://opensource.com/article/19/7/create-pull-request-github">How to create a Pull Request</a> <br>
+  <a href="https://docs.github.com/get-started">Getting started with Git and GitHub</a> <br>
+</p>
+
+<h3 align="center">Show some &nbsp;❤️&nbsp; by &nbsp;🌟&nbsp; this repository!</h3>
+
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
+
+## 🏅 Attribution
+
+This **CONTRIBUTING.md** was prepared with **❤️** by  [`DIVYA JAIN`](https://github.com/DivyaJain-DataAnalyst) for **Travia** as part of the **GSSoC'25 program.**
+
+The structure and recommendations follow **GitHub Open Source Guides** and best practices used in leading open-source repositories.
+
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
+
+## 👍 Thank you for your contribution!!
+
+<h3 align="center">
+Thank you for contributing to Travia 🌟
+ <br>
+We can't wait to see what you build! 🍽️✨
+</h3>

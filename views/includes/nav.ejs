@@ -1,22 +1,32 @@
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+<!-- Airbnb-Style Navigation -->
+<nav class="navbar navbar-expand-lg airbnb-navbar sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"
-      ><i class="fa-regular fa-compass"></i
-    ></a>
+    <!-- Airbnb-Style Logo -->
+    <a class="navbar-brand airbnb-logo" href="/listings">
+      <i class="fa-regular fa-compass"></i>
+      <span class="brand-text">travia</span>
+    </a>
+
+    <!-- Mobile Toggle -->
     <button
-      class="navbar-toggler"
+      class="navbar-toggler border-0"
       type="button"
       data-bs-toggle="collapse"
-      data-bs-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup"
+      data-bs-target="#navbarContent"
+      aria-controls="navbarContent"
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <!-- Center Navigation Links -->
+      <div class="navbar-nav mx-auto">
+        <a class="nav-link airbnb-nav-link" href="/listings">
+          <i class="fas fa-search me-1"></i>
+          Explore
+        </a>
       </div>
 
       <div class="navbar-nav ms-auto">
@@ -50,8 +60,210 @@
         <% } else { %>
         <a class="nav-link" aria-current="page" href="/signup"><b>Signup</b></a>
         <a class="nav-link" href="/login"><b>Log in</b></a>
+      <!-- Right Side User Menu -->
+      <div class="navbar-nav airbnb-user-menu">
+        <a class="nav-link host-link" href="/listings/create">
+          <i class="fas fa-plus-circle me-1"></i>
+          Become a host
+        </a>
+        
+        <% if(!currUser) { %>
+          <!-- Guest Menu -->
+          <div class="auth-buttons">
+            <a class="btn btn-outline-dark auth-btn" href="/login">Log in</a>
+            <a class="btn btn-dark auth-btn" href="/signup">Sign up</a>
+          </div>
+        <% } else { %>
+          <!-- User Menu Dropdown -->
+          <div class="dropdown user-dropdown">
+            <button class="btn dropdown-toggle user-menu-btn" type="button" data-bs-toggle="dropdown">
+              <i class="fas fa-bars me-2"></i>
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
+              <li><a class="dropdown-item" href="/dashboard">
+                <i class="fas fa-chart-line me-2"></i>Dashboard
+              </a></li>
+              <li><a class="dropdown-item" href="/profile">
+                <i class="fas fa-user-cog me-2"></i>Account
+              </a></li>
+              <li><a class="dropdown-item" href="/listings/create">
+                <i class="fas fa-home me-2"></i>Host your home
+              </a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/help">
+                <i class="fas fa-question-circle me-2"></i>Help
+              </a></li>
+              <li><a class="dropdown-item" href="/logout">
+                <i class="fas fa-sign-out-alt me-2"></i>Log out
+              </a></li>
+            </ul>
+          </div>
         <% } %>
       </div>
     </div>
   </div>
 </nav>
+
+<!-- Airbnb Navigation Styles -->
+<style>
+.airbnb-navbar {
+  background: white;
+  border-bottom: 1px solid var(--airbnb-border);
+  padding: 12px 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.airbnb-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--airbnb-red);
+  text-decoration: none;
+}
+
+.airbnb-logo:hover {
+  color: var(--airbnb-red-dark);
+}
+
+.brand-text {
+  font-size: 1.2rem;
+  color: var(--airbnb-red);
+}
+
+.airbnb-nav-link {
+  color: var(--airbnb-black);
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.airbnb-nav-link:hover {
+  background: var(--airbnb-light-gray);
+  color: var(--airbnb-black);
+}
+
+.airbnb-user-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.host-link {
+  color: var(--airbnb-black);
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.host-link:hover {
+  background: var(--airbnb-light-gray);
+  color: var(--airbnb-black);
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-dark {
+  border-color: var(--airbnb-border);
+  color: var(--airbnb-black);
+}
+
+.btn-outline-dark:hover {
+  background: var(--airbnb-light-gray);
+  border-color: var(--airbnb-black);
+  color: var(--airbnb-black);
+}
+
+.btn-dark {
+  background: var(--airbnb-black);
+  border-color: var(--airbnb-black);
+}
+
+.btn-dark:hover {
+  background: #000;
+  border-color: #000;
+}
+
+.user-menu-btn {
+  background: white;
+  border: 1px solid var(--airbnb-border);
+  border-radius: 20px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.user-menu-btn:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--airbnb-gray);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.user-dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  border-radius: 12px;
+  padding: 8px 0;
+  margin-top: 8px;
+  min-width: 200px;
+}
+
+.user-dropdown-menu .dropdown-item {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--airbnb-black);
+  display: flex;
+  align-items: center;
+}
+
+.user-dropdown-menu .dropdown-item:hover {
+  background: var(--airbnb-light-gray);
+  color: var(--airbnb-black);
+}
+
+@media (max-width: 991px) {
+  .airbnb-user-menu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .auth-buttons {
+    flex-direction: column;
+  }
+  
+  .auth-btn {
+    text-align: center;
+  }
+}
+</style>

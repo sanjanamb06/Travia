@@ -2,7 +2,11 @@
 
 A minimalistic platform to book unique homes and spaces from local hosts — or create your own listing and earn by hosting. Simple, seamless, and accessible for every traveler and host.
 
-[🌍 Live Demo](https://travia-408o.onrender.com/listings)
+[🌍 Live Demo](https://travia-408o.onrender.com/listings) | [📋 Contributing Guide](./CONTRIBUTING.md) | [🎯 Contribution Roadmap](./CONTRIBUTION_ROADMAP.md)
+
+[![GitHub issues](https://img.shields.io/github/issues/sanjanamb06/Travia)](https://github.com/sanjanamb06/Travia/issues)
+[![GitHub forks](https://img.shields.io/github/forks/sanjanamb06/Travia)](https://github.com/sanjanamb06/Travia/network)
+[![GitHub stars](https://img.shields.io/github/stars/sanjanamb06/Travia)](https://github.com/sanjanamb06/Travia/stargazers)
 
 ---
 
@@ -22,6 +26,14 @@ A minimalistic platform to book unique homes and spaces from local hosts — or 
 
 ## 🛠️ Tech Stack
 
+- **Backend**: Node.js, Express.js
+- **Frontend**: EJS Templates, CSS3, JavaScript
+- **Database**: MongoDB with Mongoose
+- **Authentication**: Passport.js (Local Strategy)
+- **File Upload**: Multer + Cloudinary
+- **Maps**: Mapbox GL JS
+- **Session Management**: Express-session with MongoDB store
+- **Validation**: Joi schema validation
 **Frontend:**
 - EJS (Embedded JavaScript Templates)
 - CSS3 & Bootstrap (Responsive Design)
@@ -159,7 +171,7 @@ Travia/
 
 ---
 
-## 📌 Status
+## 📌 Current Status
 
 - ✅ **Production Ready** – All core features implemented and working
 - 🚀 **Deployed** – Live on Render platform

@@ -12,13 +12,15 @@ A minimalistic platform to book unique homes and spaces from local hosts — or 
 
 ## ✨ Features
 
-- 🔐 **User Authentication** (Register / Login / Logout)
-- 🏡 **Host Listings** (Add your own properties)
-- 🗺️ **Map Integration** (Mapbox for property locations)
-- 📝 **Reviews & Ratings** (Guest feedback system)
-- 📱 **Responsive Design** (Mobile-friendly interface)
-- �️ **Image Upload** (Cloudinary integration)
-- 🔒 **Secure Sessions** (Passport.js authentication)
+- 🔐 **User Authentication** - Complete register/login/logout system with Passport.js
+- 🏡 **Property Listings** - Add, edit, and manage your own property listings
+- 🗺️ **Interactive Maps** - Mapbox integration for location visualization
+- 📝 **Reviews & Ratings** - Comprehensive review system for properties
+- 📱 **Responsive Design** - Mobile-first responsive UI
+- 🖼️ **Image Upload** - Cloudinary integration for property images
+- 🔒 **Session Management** - Secure session handling with MongoDB store
+- ⚡ **Flash Messages** - User feedback with connect-flash
+- 🛡️ **Input Validation** - Server-side validation with Joi
 
 ---
 
@@ -32,19 +34,41 @@ A minimalistic platform to book unique homes and spaces from local hosts — or 
 - **Maps**: Mapbox GL JS
 - **Session Management**: Express-session with MongoDB store
 - **Validation**: Joi schema validation
+**Frontend:**
+- EJS (Embedded JavaScript Templates)
+- CSS3 & Bootstrap (Responsive Design)
+- JavaScript (Client-side interactions)
+
+**Backend:**
+- Node.js (Runtime Environment)
+- Express.js (Web Framework)
+- Passport.js (Authentication)
+- Mongoose (MongoDB Object Modeling)
+
+**Database:**
+- MongoDB Atlas (Cloud Database)
+
+**Third-Party Services:**
+- Mapbox (Maps & Geocoding)
+- Cloudinary (Image Storage & Processing)
+
+**Development Tools:**
+- Nodemon (Development Server)
+- Method Override (HTTP Verbs)
+- Connect Flash (Flash Messages)
 
 ---
 
 ## 🚀 Getting Started (Run Locally)
 
 ### Prerequisites
-- **Node.js** (v16 or higher)
-- **npm** or **yarn**
-- **MongoDB** (local installation or MongoDB Atlas)
+- **Node.js** (v20.18.0 or higher)
+- **npm** (Node Package Manager)
+- **MongoDB Atlas** account (for database)
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/sanjanamb06/Travia.git
+git clone https://github.com/itsdevansh5/Travia.git
 cd Travia
 ```
 
@@ -55,35 +79,35 @@ npm install
 
 ### 3. Set Up Environment Variables
 
-Copy the example environment file:
-```bash
-cp .env.example .env
-```
+Create a `.env` file in the root directory with the following variables:
 
-Edit `.env` with your actual values:
 ```env
-ATLASDB_URL=mongodb://127.0.0.1:27017/wanderlust
-SECRET=your_super_secret_key_here
-CLOUD_NAME=your_cloudinary_cloud_name
-API_KEY=your_cloudinary_api_key
-API_SECRET=your_cloudinary_api_secret
-MAP_TOKEN=your_mapbox_access_token
 NODE_ENV=development
+PORT=3000
+ATLASDB_URL=your_mongodb_atlas_connection_string
+SESSION_SECRET=your_session_secret_key
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_KEY=your_cloudinary_api_key
+CLOUDINARY_SECRET=your_cloudinary_api_secret
+MAP_TOKEN=your_mapbox_access_token
 ```
 
-### 4. Initialize Database (Optional)
-```bash
-node init/index.js
-```
+### 4. Run the Application
 
-### 5. Start the Application
+**For Development:**
 ```bash
-npm start
-# or for development with auto-restart:
 npm run dev
 ```
 
-Open your browser and navigate to [http://localhost:8080](http://localhost:8080).
+**For Production:**
+```bash
+npm start
+```
+
+Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
+
+### 5. Default Route
+The app automatically redirects from `/` to `/listings` where you can view all property listings.
 
 ---
 
@@ -91,115 +115,114 @@ Open your browser and navigate to [http://localhost:8080](http://localhost:8080)
 
 ```
 Travia/
-├── controller/          # Route controllers
-├── models/             # Database models
-├── routes/             # Express routes
-├── views/              # EJS templates
-├── public/             # Static files (CSS, JS, images)
-├── utils/              # Utility functions
-├── init/               # Database initialization
-├── middleware.js       # Custom middleware
-├── schema.js          # Joi validation schemas
-├── app.js             # Main application file
-└── package.json       # Dependencies and scripts
+├── app.js                 # Main application file
+├── package.json           # Dependencies and scripts
+├── cloudConfig.js         # Cloudinary configuration
+├── schema.js             # Joi validation schemas
+├── middleware.js         # Custom middleware functions
+├── controller/           # Route controllers
+│   ├── listing.js        # Listing controller
+│   ├── review.js         # Review controller
+│   └── user.js           # User controller
+├── models/               # Database models
+│   ├── listing.js        # Listing model
+│   ├── review.js         # Review model
+│   └── user.js           # User model
+├── routes/               # Express routes
+│   ├── listing.js        # Listing routes
+│   ├── review.js         # Review routes
+│   └── user.js           # User routes
+├── views/                # EJS templates
+│   ├── layouts/          # Layout templates
+│   ├── listings/         # Listing templates
+│   ├── users/            # User templates
+│   └── includes/         # Partial templates
+├── public/               # Static files
+│   ├── css/              # Stylesheets
+│   └── js/               # Client-side JavaScript
+└── utils/                # Utility functions
+    ├── ExpressError.js   # Custom error class
+    └── wrapAsync.js      # Async error handler
 ```
 
 ---
 
-## � Contributing
+## � API Endpoints
 
-We welcome contributions from the community! This project is perfect for:
+### Listings
+- `GET /listings` - View all listings
+- `GET /listings/new` - Show create listing form
+- `POST /listings` - Create new listing
+- `GET /listings/:id` - View specific listing
+- `GET /listings/:id/edit` - Show edit listing form
+- `PUT /listings/:id` - Update listing
+- `DELETE /listings/:id` - Delete listing
 
-- 🔰 **Beginners** - Start with good first issues
-- 🎓 **Students** - Great for learning full-stack development
-- 🏆 **GSSoC Participants** - Multiple contribution opportunities
+### Reviews
+- `POST /listings/:id/reviews` - Add review to listing
+- `DELETE /listings/:id/reviews/:reviewId` - Delete review
 
-### Quick Start for Contributors
-
-1. **Fork** the repository
-2. **Read** our [Contributing Guide](./CONTRIBUTING.md)
-3. **Check** the [Contribution Roadmap](./CONTRIBUTION_ROADMAP.md) for ideas
-4. **Pick** an issue and start coding!
-
-### 🏷️ Good First Issues
-- Fix documentation inconsistencies
-- Improve error handling
-- Add form validation
-- Enhance mobile responsiveness
-- Create reusable components
-
-### 🚀 Advanced Contributions
-- Implement booking system
-- Add search & filter functionality
-- Create REST API
-- Convert to React frontend
-- Add payment integration
+### Users
+- `GET /signup` - Show signup form
+- `POST /signup` - Register new user
+- `GET /login` - Show login form
+- `POST /login` - Login user
+- `GET /logout` - Logout user
 
 ---
 
 ## 📌 Current Status
 
-- 🟡 **MVP Stage** – Core features working
-- 🔍 **9 Open Issues** – Ready for contributions
-- � **2 Contributors** – Growing community
-- 🎯 **GSSoC 2025** – Actively participating
+- ✅ **Production Ready** – All core features implemented and working
+- 🚀 **Deployed** – Live on Render platform
+- 🔒 **Secure** – Authentication and authorization implemented
 
 ---
 
-## 🧠 Roadmap & Future Plans
+## 🧠 Future Enhancements
 
-### 🎯 Short Term Goals
-- [ ] Complete booking system with calendar
-- [ ] Advanced search and filtering
-- [ ] User dashboard (host/guest)
-- [ ] Mobile app development
-- [ ] Payment integration
-
-### 🚀 Long Term Vision
-- [ ] 🤖 AI-powered travel recommendations
-- [ ] � Real-time messaging system
-- [ ] 📱 Mobile applications (iOS/Android)
-- [ ] 🌐 Multi-language support
-- [ ] 📊 Advanced analytics dashboard
+- 🤖 AI-powered travel recommendations
+- 💬 Real-time messaging between hosts and guests
+- 📆 Advanced booking calendar system
+- 🔍 Enhanced search and filtering options
+- 💳 Payment gateway integration
+- 📊 Analytics dashboard for hosts
+- 🌐 Multi-language support
 
 ---
 
-## 🏆 Contributors
+## 🤝 Contributing
 
-Thanks to all our amazing contributors! 🎉
-
-<a href="https://github.com/sanjanamb06/Travia/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=sanjanamb06/Travia" />
-</a>
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](./LICENSE).
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
-## 🙋‍♀️ Author & Maintainer
+## 📝 License
 
-**Sanjana MB**
-- 🐙 [GitHub](https://github.com/sanjanamb06)
-- 💼 [LinkedIn](https://linkedin.com/in/sanjanamb06) <!-- Update with actual link -->
+This project is licensed under the ISC License.
 
 ---
 
-## 📞 Support & Community
+## 🙋‍♂️ Author
 
-- 🐛 **Found a bug?** [Open an issue](https://github.com/sanjanamb06/Travia/issues)
-- 💡 **Have an idea?** [Start a discussion](https://github.com/sanjanamb06/Travia/discussions)
-- 🤝 **Want to contribute?** Check our [Contributing Guide](./CONTRIBUTING.md)
+- **Devansh**
+- [GitHub](https://github.com/itsdevansh5)
+- Repository: [Travia](https://github.com/itsdevansh5/Travia)
 
 ---
 
-<div align="center">
+## 🙏 Acknowledgments
 
-**⭐ Star this repository if you find it helpful!**
+- **Express.js** community for the excellent web framework
+- **Mapbox** for mapping services
+- **Cloudinary** for image management
+- **MongoDB Atlas** for database hosting
+- **Render** for deployment platform
 
-*Built with ❤️ for the travel community*
+---
 
-</div>
+*Feel free to ⭐ star this repository if you found it helpful!*

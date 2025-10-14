@@ -19,6 +19,11 @@ const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
+// Add root route redirect to listings
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
@@ -29,28 +34,47 @@ app.use(express.static(path.join(__dirname, "/public")));
 const dbUrl = process.env.ATLASDB_URL;
 
 async function main() {
+  if (!dbUrl) {
+    throw new Error("MongoDB connection string (ATLASDB_URL) is not defined in .env file");
+  }
   await mongoose.connect(dbUrl);
 }
+
 main()
   .then(() => {
-    console.log("Connection success");
+    console.log("✅ MongoDB connection successful");
   })
-  .catch((err) => console.log(err));
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err.message);
+    console.log("💡 Please check your MongoDB connection string in .env file");
+    console.log("   For local MongoDB: mongodb://localhost:27017/travia");
+    console.log("   For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/travia");
+  });
 
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: {
-    secret: process.env.SECRET,
-  },
-  touchAfter: 24 * 60 * 60,
-});
+// Create MongoStore only if dbUrl is available
+let store;
+if (dbUrl) {
+  try {
+    store = MongoStore.create({
+      mongoUrl: dbUrl,
+      crypto: {
+        secret: process.env.SECRET,
+      },
+      touchAfter: 24 * 60 * 60,
+    });
 
 store.on("error", (err) => {
   console.log("Error in mongo session store", err);
 });
+    store.on("error", (err) => {
+      console.log("Error in mongo session store:", err);
+    });
+  } catch (err) {
+    console.warn("Could not create MongoDB store, using memory store:", err.message);
+  }
+}
 
 const sessionOptions = {
-  store: store, //storing session related info in mongoatlas
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
@@ -60,6 +84,14 @@ const sessionOptions = {
     httpOnly: true,
   },
 };
+
+// Add MongoDB store if available, otherwise use default memory store
+if (store) {
+  sessionOptions.store = store;
+  console.log("Using MongoDB session store");
+} else {
+  console.log("Using memory session store (sessions will not persist)");
+}
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -75,7 +107,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;
+  res.locals.currUser = req.user || null; // Ensure currUser is always defined
   next();
 });
 

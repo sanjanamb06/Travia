@@ -1,11 +1,94 @@
 const Listing = require("../models/listing.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapToken = process.env.MAP_TOKEN;
-const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+
+// Initialize geocoding client only if valid token is provided
+let geocodingClient = null;
+if (mapToken && mapToken.startsWith('pk.') && mapToken !== 'your_mapbox_access_token' && mapToken !== 'your_mapbox_token_here') {
+  try {
+    geocodingClient = mbxGeocoding({ accessToken: mapToken });
+  } catch (error) {
+    console.warn('Invalid Mapbox token provided. Map functionality will be disabled.');
+  }
+}
 
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
+  try {
+    let { search, country, minPrice, maxPrice, sortBy } = req.query;
+    
+    // Build query object
+    let query = {};
+    
+    // Search functionality
+    if (search && search.trim()) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { location: { $regex: search, $options: 'i' } },
+        { country: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Country filter
+    if (country && country.trim() && country !== 'all') {
+      query.country = { $regex: country, $options: 'i' };
+    }
+    
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = parseInt(minPrice);
+      if (maxPrice) query.price.$lte = parseInt(maxPrice);
+    }
+    
+    // Build sort object
+    let sortOptions = {};
+    switch (sortBy) {
+      case 'price-low':
+        sortOptions.price = 1;
+        break;
+      case 'price-high':
+        sortOptions.price = -1;
+        break;
+      case 'newest':
+        sortOptions._id = -1;
+        break;
+      case 'oldest':
+        sortOptions._id = 1;
+        break;
+      default:
+        sortOptions._id = -1; // Default to newest first
+    }
+    
+    // Execute query
+    const allListings = await Listing.find(query).sort(sortOptions);
+    
+    // Get unique countries for filter dropdown
+    const countries = await Listing.distinct('country');
+    
+    // Search statistics
+    const totalListings = await Listing.countDocuments();
+    const filteredCount = allListings.length;
+    
+    res.render("listings/index.ejs", { 
+      allListings, 
+      countries,
+      searchParams: req.query,
+      totalListings,
+      filteredCount
+    });
+  } catch (error) {
+    console.error('Error in listings index:', error);
+    req.flash("error", "Something went wrong while fetching listings");
+    const allListings = await Listing.find({});
+    res.render("listings/index.ejs", { 
+      allListings, 
+      countries: [],
+      searchParams: {},
+      totalListings: allListings.length,
+      filteredCount: allListings.length
+    });
+  }
 };
 
 module.exports.create = (req, res) => {
@@ -31,12 +114,21 @@ module.exports.show = async (req, res) => {
 };
 
 module.exports.addNew = async (req, res) => {
-  let response = await geocodingClient
-    .forwardGeocode({
-      query: req.body.listing.location,
-      limit: 1,
-    })
-    .send();
+  let response = null;
+  
+  // Only use geocoding if client is available
+  if (geocodingClient) {
+    try {
+      response = await geocodingClient
+        .forwardGeocode({
+          query: req.body.listing.location,
+          limit: 1,
+        })
+        .send();
+    } catch (error) {
+      console.warn('Geocoding failed:', error.message);
+    }
+  }
 
   let url = req.file.path;
   let filename = req.file.filename;
@@ -45,8 +137,18 @@ module.exports.addNew = async (req, res) => {
   newList.owner = req.user._id;
   newList.image = { url, filename };
 
-  newList.geometry=response.body.features[0].geometry;
-  let save=await newList.save();
+  // Set geometry if geocoding was successful
+  if (response && response.body && response.body.features && response.body.features.length > 0) {
+    newList.geometry = response.body.features[0].geometry;
+  } else {
+    // Default geometry (coordinates for a generic location if geocoding fails)
+    newList.geometry = {
+      type: "Point",
+      coordinates: [0, 0] // Default coordinates
+    };
+    console.warn('No geocoding data available. Using default coordinates.');
+  }
+  let save = await newList.save();
   console.log(save);
   req.flash("success", "New listing created!");
   res.redirect("/listings");
@@ -82,4 +184,78 @@ module.exports.delete = async (req, res) => {
   console.log(delList);
   req.flash("success", "Deleted successfully!");
   res.redirect("/listings");
+};
+
+// API endpoint for search functionality
+module.exports.searchAPI = async (req, res) => {
+  try {
+    let { search, country, minPrice, maxPrice, sortBy, limit = 20 } = req.query;
+    
+    // Build query object
+    let query = {};
+    
+    // Search functionality
+    if (search && search.trim()) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { location: { $regex: search, $options: 'i' } },
+        { country: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Country filter
+    if (country && country.trim() && country !== 'all') {
+      query.country = { $regex: country, $options: 'i' };
+    }
+    
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = parseInt(minPrice);
+      if (maxPrice) query.price.$lte = parseInt(maxPrice);
+    }
+    
+    // Build sort object
+    let sortOptions = {};
+    switch (sortBy) {
+      case 'price-low':
+        sortOptions.price = 1;
+        break;
+      case 'price-high':
+        sortOptions.price = -1;
+        break;
+      case 'newest':
+        sortOptions._id = -1;
+        break;
+      case 'oldest':
+        sortOptions._id = 1;
+        break;
+      default:
+        sortOptions._id = -1;
+    }
+    
+    // Execute query with limit
+    const listings = await Listing.find(query)
+      .sort(sortOptions)
+      .limit(parseInt(limit))
+      .select('title description location country price image');
+    
+    // Get total count for pagination
+    const totalCount = await Listing.countDocuments(query);
+    
+    res.json({
+      success: true,
+      listings,
+      totalCount,
+      hasMore: totalCount > parseInt(limit)
+    });
+  } catch (error) {
+    console.error('Search API error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error performing search',
+      error: error.message
+    });
+  }
 };

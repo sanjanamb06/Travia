@@ -18,6 +18,7 @@ const User = require("./models/user.js");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const bookingRouter = require("./routes/booking.js");
 
 // Add root route redirect to listings
 app.get("/", (req, res) => {
@@ -113,6 +114,7 @@ app.use((req, res, next) => {
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
 app.use("/", userRouter);
+app.use("/user", bookingRouter);
 
 //handle error for unknown routes
 app.all("*", (req, res, next) => {
@@ -125,6 +127,6 @@ app.use((err, req, res, next) => {
   res.status(status).render("listings/error.ejs", { message }); // ✅ Ensure status is set
 });
 
-app.listen(8080, () => {
+app.listen(8000,()=> {
   console.log("Server running");
 });

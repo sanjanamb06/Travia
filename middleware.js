@@ -1,5 +1,6 @@
 const Listing = require("./models/listing");
 const Review = require("./models/review");
+const Booking = require("./models/booking.js"); 
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -37,6 +38,20 @@ module.exports.isReviewAuthor = async (req, res, next) => {
   if (!review.author.equals(res.locals.currUser._id)) {
     req.flash("error", "You are not the author of this review");
     return res.redirect(`/listings/${id}`);
+  }
+  next();
+};
+
+module.exports.isBookingGuest = async (req, res, next) => {
+  let { bookingId } = req.params;
+  let booking = await Booking.findById(bookingId);
+  if (!booking) {
+    req.flash("error", "Booking not found!");
+    return res.redirect("/user/my-bookings");
+  }
+  if (!booking.guest.equals(res.locals.currUser._id)) {
+    req.flash("error", "You are not the guest for this booking");
+    return res.redirect(`/user/my-bookings`);
   }
   next();
 };

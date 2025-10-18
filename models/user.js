@@ -7,6 +7,12 @@ const userSchema = new Schema({
         type:String,
         required:true,
     },
+    bookings: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Booking",
+    },
+  ],
 });
 
 userSchema.plugin(passportLocalMongoose);//this creates a hashed password and even salting of tht so we dont create a password field

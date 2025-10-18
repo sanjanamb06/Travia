@@ -3,20 +3,29 @@ const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
-const { listingSchema } = require("../schema.js");
+const { listingSchema,bookingSchema}=require("../schema.js");
 const { isLoggedIn, isOwner } = require("../middleware.js");
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
 
 const listingController = require("../controller/listing.js");
-
+const bookingController = require("../controller/booking.js"); 
 // Search API endpoint for AJAX requests
 router.get('/api/search', wrapAsync(listingController.searchAPI));
 
 //this is a middleware related to joi to validate listing
 const validateListing = (req, res, next) => {
   let { error } = listingSchema.validate(req.body);
+  if (error) {
+    let msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, msg);
+  } else {
+    next();
+  }
+};
+const validateBooking = (req, res, next) => {
+  let { error } = bookingSchema.validate(req.body);
   if (error) {
     let msg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(400, msg);
@@ -44,7 +53,12 @@ router.get("/:id", wrapAsync(listingController.show));
 
 //edit route
 router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.edit));
-
+router.post(
+  "/:id/book",
+  isLoggedIn,
+  validateBooking,
+  wrapAsync(bookingController.createBooking)
+);
 //update route
 router.put(
   "/:id",

@@ -103,6 +103,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
+  console.log("--- GLOBAL MIDDLEWARE IS RUNNING! ---");
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user || null; // Ensure currUser is always defined
@@ -127,6 +128,6 @@ app.use((err, req, res, next) => {
   res.status(status).render("listings/error.ejs", { message }); // ✅ Ensure status is set
 });
 
-app.listen(8000,()=> {
+app.listen(8080, () => {
   console.log("Server running");
 });

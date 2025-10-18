@@ -53,6 +53,8 @@ router.get("/:id", wrapAsync(listingController.show));
 
 //edit route
 router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.edit));
+
+//booking route
 router.post(
   "/:id/book",
   isLoggedIn,

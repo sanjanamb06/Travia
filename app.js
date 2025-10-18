@@ -18,6 +18,7 @@ const User = require("./models/user.js");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+
 const bookingRouter = require("./routes/booking.js");
 
 // Add root route redirect to listings
@@ -73,7 +74,7 @@ if (dbUrl) {
 }
 
 const sessionOptions = {
-  secret: process.env.SECRET,
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -103,7 +104,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  console.log("--- GLOBAL MIDDLEWARE IS RUNNING! ---");
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user || null; // Ensure currUser is always defined
@@ -117,6 +117,7 @@ app.use("/listings/:id/reviews", reviews);
 app.use("/", userRouter);
 app.use("/user", bookingRouter);
 
+
 //handle error for unknown routes
 app.all("*", (req, res, next) => {
   next(new ExpressError(404, "Page Not found"));
@@ -124,8 +125,13 @@ app.all("*", (req, res, next) => {
 
 //error handling middleware
 app.use((err, req, res, next) => {
-  let { status = 500, message = "Something went wrong" } = err;
-  res.status(status).render("listings/error.ejs", { message }); // ✅ Ensure status is set
+  let { status = 500, message = "Something went wrong" } = err;
+  res.status(status).render("listings/error.ejs", { 
+    message, 
+    currUser: req.user || null,
+    success: [], // <-- FIX: Pass an empty array
+    error: []    // <-- FIX: Pass an empty array
+ });
 });
 
 app.listen(8080, () => {

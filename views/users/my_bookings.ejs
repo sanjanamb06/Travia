@@ -1,0 +1,74 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container my-5">
+  <h1 class="mb-4 text-center">My Bookings 📅</h1>
+
+  <% if (bookings && bookings.length > 0) { %>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <% bookings.forEach(booking => { %>
+        <div class="col">
+          <div class="card h-100 shadow-sm booking-card">
+            <% if (booking.listing && booking.listing.image) { %>
+              <img src="<%= booking.listing.image.url %>" class="card-img-top listing-card-img" alt="<%= booking.listing.title %>">
+            <% } else { %>
+              <img src="https://via.placeholder.com/300?text=Listing+Image+Not+Available" class="card-img-top listing-card-img" alt="Placeholder Image">
+            <% } %>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">
+                <% if (booking.listing) { %>
+                  <a href="/listings/<%= booking.listing._id %>" class="text-decoration-none text-dark">
+                    <%= booking.listing.title %>
+                  </a>
+                <% } else { %>
+                  Listing Unavailable
+                <% } %>
+              </h5>
+              <% if (booking.listing) { %>
+                <p class="card-text text-muted mb-2"><%= booking.listing.location %>, <%= booking.listing.country %></p>
+              <% } %>
+              <p class="card-text mb-1">
+                <strong>Dates:</strong>
+                <%= booking.startDate.toLocaleDateString() %> - <%= booking.endDate.toLocaleDateString() %>
+              </p>
+              <p class="card-text">
+                <strong>Total Price:</strong> ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+              </p>
+
+              <form
+                method="POST"
+                action="/bookings/my-bookings/<%= booking._id %>?_method=DELETE"
+                class="mt-auto needs-validation"
+                novalidate
+                onsubmit="return confirm('Are you sure you want to cancel this booking?');"
+              >
+                <button type="submit" class="btn btn-danger btn-sm w-100">
+                  <i class="fas fa-trash-alt me-1"></i> Cancel Booking
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="text-center mt-5">
+      <i class="fas fa-suitcase-rolling fa-3x text-muted mb-3"></i>
+      <h3>You have no bookings yet.</h3>
+      <p class="text-muted">Ready for an adventure? <a href="/listings">Explore listings</a> and book your next stay!</p>
+    </div>
+  <% } %>
+</div>
+
+<style>
+  .listing-card-img {
+    height: 200px; /* Or your preferred height */
+    object-fit: cover;
+  }
+  .booking-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  .booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+</style>

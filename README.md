@@ -92,7 +92,7 @@ Create a `.env` file in the root directory with the following variables:
 NODE_ENV=development
 PORT=3000
 ATLASDB_URL=your_mongodb_atlas_connection_string
-SESSION_SECRET=your_session_secret_key
+SECRET=your_session_secret_key
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_KEY=your_cloudinary_api_key
 CLOUDINARY_SECRET=your_cloudinary_api_secret

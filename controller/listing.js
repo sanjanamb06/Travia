@@ -154,9 +154,11 @@ module.exports.addNew = async (req, res) => {
   res.redirect("/listings");
 };
 
+
+
 module.exports.edit = async (req, res) => {
   let { id } = req.params;
-  const showListing = await Listing.findById(id);
+  const showListing = await Listing.findById(id).populate("owner");
   if (!showListing) {
     req.flash("error", "Listing you requested does not exist!");
     res.redirect("/listings");

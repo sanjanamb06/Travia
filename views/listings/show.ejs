@@ -1,23 +1,23 @@
 <% layout('/layouts/boilerplate') -%>
 
-<script>
-  const mapToken="<%=process.env.MAP_TOKEN%>";
-  <% if(showListing.geometry && showListing.geometry.coordinates) { %>
-    const coordinates= <%- JSON.stringify(showListing.geometry.coordinates) %>;
-  <% } else { %>
-    const coordinates = null;
-  <% } %>
-</script>
+<!-- <script>
+  // Pass Mapbox token and coordinates to the frontend
+//   const mapToken = "<%= process.env.MAP_TOKEN %>";
+//   <% if (showListing.geometry && showListing.geometry.coordinates) { %>
+//     const coordinates = <%- JSON.stringify(showListing.geometry.coordinates) %>;
+//   <% } else { %>
+//     const coordinates = null; // Handle cases where geocoding might have failed
+//   <% } %>
+// </script> -->
 
 <div class="container-fluid px-3">
   <div class="row justify-content-center">
-    <!-- Main Content -->
     <div class="col-12 col-lg-8">
       <div class="mb-4">
         <h1 class="text-center-mobile"><%= showListing.title %></h1>
       </div>
 
-      <div class="card show-card listing-card mb-4">
+      <div class="card show-card listing-card shadow-sm mb-4">
         <img
           src="<%= showListing.image.url%>"
           class="card-img-top show-img"
@@ -26,17 +26,16 @@
         <div class="card-body">
           <div class="row">
             <div class="col-12 col-md-8">
-              <h5 class="card-title mb-3"><%= showListing.title %></h5>
               <p class="text-muted mb-2">
-                <i class="fas fa-user me-2"></i>Owned by: <%= showListing.owner.username %>
+                <i class="fas fa-user me-2"></i>Owned by: <%= showListing.owner.name %>
               </p>
               <p class="card-text mb-3"><%= showListing.description %></p>
               <p class="text-muted mb-2">
                 <i class="fas fa-map-marker-alt me-2"></i><%= showListing.location %>, <%= showListing.country %>
               </p>
             </div>
-            <div class="col-12 col-md-4 text-center-mobile">
-              <div class="price-card p-3 border rounded">
+            <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
+              <div class="price-card p-3 border rounded bg-light h-100 shadow-sm">
                 <h4 class="text-success mb-0">
                   &#8377;<%= showListing.price.toLocaleString("en-IN") %>
                 </h4>
@@ -47,113 +46,180 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <% if(currUser && currUser._id.equals(showListing.owner._id)){ %>
-      <div class="d-flex flex-column flex-md-row gap-2 justify-content-center mb-4">
-        <a
-          href="/listings/<%= showListing._id %>/edit"
-          class="btn btn-warning flex-fill"
-        >
-          <i class="fas fa-edit me-2"></i>Edit Listing
-        </a>
-        <form
-          action="/listings/<%= showListing._id %>?_method=DELETE"
-          method="POST"
-          class="flex-fill"
-        >
-          <button class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to delete this listing?')">
-            <i class="fas fa-trash me-2"></i>Delete Listing
-          </button>
-        </form>
-      </div>
-      <% }%>
+      <% if(currUser && currUser._id.equals(showListing.owner._id)) { %>
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-center mb-4">
+          <a
+            href="/listings/<%= showListing._id %>/edit"
+            class="btn btn-warning flex-fill"
+          >
+            <i class="fas fa-edit me-2"></i>Edit Listing
+          </a>
+          <form
+            action="/listings/<%= showListing._id %>?_method=DELETE"
+            method="POST"
+            class="flex-fill"
+          >
+            <button class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to delete this listing?')">
+              <i class="fas fa-trash me-2"></i>Delete Listing
+            </button>
+          </form>
+        </div>
+      
+      <% } else if (currUser) { %>
+        <div class="card shadow-sm mb-4" id="booking-card">
+          <div class="card-body">
+            <h5 class="card-title text-center mb-3">Reserve this listing</h5>
+            <form
+              action="/listings/<%= showListing._id %>/book"
+              method="POST"
+              novalidate
+              class="needs-validation"
+            >
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label for="startDate" class="form-label fw-semibold small">Check-in</label>
+                  <input
+                    type="date"
+                    id="startDate"
+                    name="booking[startDate]"
+                    class="form-control"
+                    required
+                    onchange="calculatePrice()"
+                  />
+                  <div class="invalid-feedback">Start date is required.</div>
+                </div>
+                <div class="col-6">
+                  <label for="endDate" class="form-label fw-semibold small">Check-out</label>
+                  <input
+                    type="date"
+                    id="endDate"
+                    name="booking[endDate]"
+                    class="form-control"
+                    required
+                    onchange="calculatePrice()"
+                  />
+                  <div class="invalid-feedback">End date is required.</div>
+                </div>
+              </div>
 
-      <!-- Reviews Section -->
+              <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-success btn-lg">Reserve</button>
+              </div>
+            </form>
+            
+            <div id="price-calculation" class="mt-3" style="display: none;">
+              <div class="d-flex justify-content-between text-muted">
+                <span id="price-breakdown">₹0 x 0 nights</span>
+                <span id="price-subtotal">₹0</span>
+              </div>
+              <hr class="my-2">
+              <div class="d-flex justify-content-between fw-bold h5 mb-0">
+                <span>Total</span>
+                <span id="total-price">₹0</span>
+              </div>
+            </div>
+            <p id="date-error" class="text-danger text-center small mt-2 mb-0"></p>
+          </div>
+        </div>
+      
+      <% } else { %>
+        <div class="card shadow-sm mb-4">
+          <div class="card-body text-center">
+            <h5 class="card-title">Book this Listing</h5>
+            <p class="text-muted">You must be logged in to make a reservation.</p>
+            <a href="/login?redirectUrl=/listings/<%= showListing._id %>" class="btn btn-success">Login to Book</a>
+          </div>
+        </div>
+      <% } %>
+
       <hr class="my-4" />
       
-      <!-- Add Review Form -->
       <% if (currUser) {%>
-      <div class="mb-4">
-        <h4>Leave a Review</h4>
-        <form
-          action="/listings/<%= showListing._id %>/reviews"
-          method="POST"
-          novalidate
-          class="needs-validation"
-        >
-          <div class="mb-3">
-            <label class="form-label">Rating:</label>
-            <fieldset class="starability-slot">
-              <input
-                type="radio"
-                id="no-rate"
-                class="input-no-rate"
-                name="review[rating]"
-                value="1"
-                checked
-                aria-label="No rating."
-              />
-              <input
-                type="radio"
-                id="first-rate1"
-                name="review[rating]"
-                value="1"
-              />
-              <label for="first-rate1" title="Terrible">1 star</label>
-              <input
-                type="radio"
-                id="first-rate2"
-                name="review[rating]"
-                value="2"
-              />
-              <label for="first-rate2" title="Not good">2 stars</label>
-              <input
-                type="radio"
-                id="first-rate3"
-                name="review[rating]"
-                value="3"
-              />
-              <label for="first-rate3" title="Average">3 stars</label>
-              <input
-                type="radio"
-                id="first-rate4"
-                name="review[rating]"
-                value="4"
-              />
-              <label for="first-rate4" title="Very good">4 stars</label>
-              <input
-                type="radio"
-                id="first-rate5"
-                name="review[rating]"
-                value="5"
-              />
-              <label for="first-rate5" title="Amazing">5 stars</label>
-            </fieldset>
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h4>Leave a Review</h4>
+            <form
+              action="/listings/<%= showListing._id %>/reviews"
+              method="POST"
+              novalidate
+              class="needs-validation"
+            >
+              <div class="mb-3">
+                <label class="form-label">Rating:</label>
+                <fieldset class="starability-slot">
+                  <input
+                    type="radio"
+                    id="no-rate"
+                    class="input-no-rate"
+                    name="review[rating]"
+                    value="1"
+                    checked
+                    aria-label="No rating."
+                  />
+                  <input
+                    type="radio"
+                    id="first-rate1"
+                    name="review[rating]"
+                    value="1"
+                  />
+                  <label for="first-rate1" title="Terrible">1 star</label>
+                  <input
+                    type="radio"
+                    id="first-rate2"
+                    name="review[rating]"
+                    value="2"
+                  />
+                  <label for="first-rate2" title="Not good">2 stars</label>
+                  <input
+                    type="radio"
+                    id="first-rate3"
+                    name="review[rating]"
+                    value="3"
+                  />
+                  <label for="first-rate3" title="Average">3 stars</label>
+                  <input
+                    type="radio"
+                    id="first-rate4"
+                    name="review[rating]"
+                    value="4"
+                  />
+                  <label for="first-rate4" title="Very good">4 stars</label>
+                  <input
+                    type="radio"
+                    id="first-rate5"
+                    name="review[rating]"
+                    value="5"
+                  />
+                  <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="reviewComment">Comment:</label>
+                <textarea
+                  id="reviewComment"
+                  name="review[comment]"
+                  rows="4"
+                  class="form-control"
+                  placeholder="Share your experience..."
+                  required
+                ></textarea>
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">Please enter a comment</div>
+              </div>
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-paper-plane me-2"></i>Submit Review
+              </button>
+            </form>
           </div>
-          <div class="mb-3">
-            <label class="form-label" for="reviewComment">Comment:</label>
-            <textarea
-              id="reviewComment"
-              name="review[comment]"
-              rows="4"
-              class="form-control"
-              placeholder="Share your experience..."
-              required
-            ></textarea>
-            <div class="valid-feedback">Looks good!</div>
-            <div class="invalid-feedback">Please enter a comment</div>
-          </div>
-          <button type="submit" class="btn btn-success">
-            <i class="fas fa-paper-plane me-2"></i>Submit Review
-          </button>
-        </form>
-      </div>
+        </div>
       <% } else { %>
-      <div class="text-center py-4">
-        <p class="text-muted">Please <a href="/login">login</a> to leave a review.</p>
-      </div>
+        <div class="text-center py-4">
+          <p class="text-muted">Please <a href="/login?redirectUrl=/listings/<%= showListing._id %>">login</a> to leave a review.</p>
+        </div>
       <% } %>
-      <!-- All Reviews -->
+
+      <hr class="my-4" />
+
       <div class="mb-4">
         <h4>All Reviews (<%= showListing.reviews.length %>)</h4>
         <% if(showListing.reviews.length === 0) { %>
@@ -161,46 +227,132 @@
         <% } else { %>
           <div class="row g-3">
             <% for(review of showListing.reviews){ %>
-            <div class="col-12 col-md-6">
-              <div class="card h-100">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h6 class="card-title mb-0">
-                      <i class="fas fa-user-circle me-2"></i><%= review.author.username %>
-                    </h6>
-                    <% if(currUser && (currUser._id.equals(review.author._id) || currUser._id.equals(showListing.owner._id))) { %>
-                    <form
-                      action="/listings/<%= showListing._id %>/reviews/<%= review._id %>?_method=DELETE"
-                      method="POST"
-                      class="d-inline"
-                    >
-                      <button 
-                        type="submit" 
-                        class="btn btn-sm btn-outline-danger"
-                        onclick="return confirm('Delete this review?')"
-                      >
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    </form>
-                    <% } %>
+              <div class="col-12 col-md-6">
+                <div class="card h-100 shadow-sm">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h6 class="card-title mb-0">
+                        <i class="fas fa-user-circle me-2"></i><%= review.author.username %>
+                      </h6>
+                      <% if(currUser && (currUser._id.equals(review.author._id) || currUser._id.equals(showListing.owner._id))) { %>
+                        <form
+                          action="/listings/<%= showListing._id %>/reviews/<%= review._id %>?_method=DELETE"
+                          method="POST"
+                          class="d-inline"
+                        >
+                          <button 
+                            type="submit" 
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this review?')"
+                          >
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </form>
+                      <% } %>
+                    </div>
+                    <p class="starability-result" data-rating="<%=review.rating%>"></p>
+                    <p class="card-text"><%= review.comment%></p>
                   </div>
-                  <p class="starability-result" data-rating="<%=review.rating%>"></p>
-                  <p class="card-text"><%= review.comment%></p>
                 </div>
               </div>
-            </div>
             <% }%>
           </div>
         <% } %>
       </div>
 
-      <!-- Map Section -->
+      <hr class="my-4" />
+
       <div class="mb-4">
         <h4>Where you'll be</h4>
-        <div id="map" class="rounded shadow-sm"></div>
+        <% if(showListing.geometry && showListing.geometry.coordinates) { %>
+          <div id="map" class="rounded shadow-sm" style="height: 400px; width: 100%;"></div>
+        <% } else { %>
+          <div class="alert alert-warning" role="alert">
+            Location data is not available for this listing.
+          </div>
+        <% } %>
       </div>
     </div>
   </div>
 </div>
 
 <script src="/js/map.js"></script>
+
+<script>
+// Live Price Calculation for Booking Form
+const startDateInput = document.getElementById('startDate');
+const endDateInput = document.getElementById('endDate');
+const priceCalculationDiv = document.getElementById('price-calculation');
+const priceBreakdownSpan = document.getElementById('price-breakdown');
+const priceSubtotalSpan = document.getElementById('price-subtotal');
+const totalPriceSpan = document.getElementById('total-price');
+const dateErrorP = document.getElementById('date-error');
+
+// Get the price per night from EJS
+const pricePerNight = <%= showListing.price || 0 %>;
+
+function calculatePrice() {
+  const startDate = new Date(startDateInput.value);
+  const endDate = new Date(endDateInput.value);
+  dateErrorP.textContent = ''; // Clear previous errors
+
+  if (startDateInput.value && endDateInput.value) {
+    if (endDate <= startDate) {
+      dateErrorP.textContent = 'Check-out date must be after check-in date.';
+      priceCalculationDiv.style.display = 'none';
+      return;
+    }
+
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayCount = Math.round((endDate.getTime() - startDate.getTime()) / oneDay);
+    
+    if (dayCount > 0) {
+      const total = dayCount * pricePerNight;
+      
+      priceBreakdownSpan.textContent = `₹${pricePerNight.toLocaleString("en-IN")} x ${dayCount} night${dayCount > 1 ? 's' : ''}`;
+      priceSubtotalSpan.textContent = `₹${total.toLocaleString("en-IN")}`;
+      totalPriceSpan.textContent = `₹${total.toLocaleString("en-IN")}`;
+      priceCalculationDiv.style.display = 'block';
+    } else {
+      priceCalculationDiv.style.display = 'none';
+    }
+  } else {
+    priceCalculationDiv.style.display = 'none';
+  }
+}
+
+// Add min attribute to date inputs to prevent booking past dates
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  
+  if(startDateInput) {
+    startDateInput.setAttribute('min', today);
+  }
+
+  if(endDateInput) {
+    endDateInput.setAttribute('min', today); // Set initial min for end date
+  }
+
+  // Set min for end date based on start date
+  if(startDateInput && endDateInput) {
+    startDateInput.addEventListener('change', () => {
+      if (startDateInput.value) {
+        let nextDay = new Date(startDateInput.value);
+        nextDay.setDate(nextDay.getDate() + 1);
+        const minEndDate = nextDay.toISOString().split('T')[0];
+        
+        endDateInput.setAttribute('min', minEndDate);
+        
+        // Also update end date value if it's no longer valid
+        if (endDateInput.value < minEndDate) {
+            endDateInput.value = minEndDate;
+        }
+
+      } else {
+        endDateInput.setAttribute('min', today);
+      }
+      calculatePrice(); // Recalculate when start date changes
+    });
+  }
+});
+</script>

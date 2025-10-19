@@ -40,7 +40,7 @@ router
   .get(wrapAsync(listingController.index))
   .post(
     isLoggedIn,
-    upload.single("listing[image]"),
+    upload.single("listing[image][url]"),
     validateListing,
     wrapAsync(listingController.addNew)
   );
@@ -66,7 +66,7 @@ router.put(
   "/:id",
   isLoggedIn,
   isOwner,
-  upload.single("listing[image]"),
+  upload.single("listing[image][url]"),
   validateListing,
   wrapAsync(listingController.update)
 );

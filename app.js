@@ -74,7 +74,7 @@ if (dbUrl) {
 }
 
 const sessionOptions = {
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {

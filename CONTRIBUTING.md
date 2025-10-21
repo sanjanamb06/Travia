@@ -79,7 +79,7 @@ Your contributions earn points that count toward GSSoC'25 and your Travia Leader
 ## ✅ PR Review Process
 
 We aim to keep things smooth and transparent:
-
+**ALWAYS PROVIDE YOUR EMAIL WITH YOUR PR**
 * Once your PR is submitted, a maintainer will review it.
 * You may be asked to:
   * Fix styling issues.
